@@ -29,3 +29,9 @@ services:
     environment:
       KAFKA_BROKERCONNECT: kafka:9092,localhost:9094
   
+  kafka-clients:
+    build: 
+      context: ./apps
+      dockerfile: Dockerfile
+    volumes:
+      - ./apps/:/home/apps/
