@@ -43,9 +43,10 @@ class KafkaBroker:
                 ],
                 validate_only=False
             )
-            print("topic created")
-            # TopicAlreadyExistsError
+            print("topic created:", topic)
+            # TODO - treat a more specific error for example: TopicAlreadyExistsError
         except Exception as e:
+            print("topic already exist:", topic)
             pass
 
     def send_to_kafka(self, topic: str, message: str, key: str):
@@ -69,6 +70,7 @@ def retry_if_many_requests(callable, tries=3):
     while tries > 0:
         try:
             return callable()
+        # TODO - treat a more specific error
         except requests.exceptions.HTTPError as e:
             sleep(21)
         finally:
@@ -77,6 +79,8 @@ def retry_if_many_requests(callable, tries=3):
 for coin in retry_if_many_requests(cg.get_coins_list, 3):
     if coin.get('id', None):
         today = datetime.now()
+
+        kafka.ensure_topic_exists('coins')
         kafka.send_to_kafka('coins', json.dumps(coin), coin['id'])
         for i in range(7):
 
@@ -87,7 +91,9 @@ for coin in retry_if_many_requests(cg.get_coins_list, 3):
             topic = f"{coin['id']}_history"
             kafka.ensure_topic_exists(topic)
             kafka.send_to_kafka(topic, json.dumps(coin_history), f"{coin['id']}-{day_key}")
-        
+            kafka.ensure_topic_exists('coins_history')
+            kafka.send_to_kafka("coins_history", json.dumps(coin_history), f"{coin['id']}-{day_key}")
+
         # to prevent exceded quota
         sleep(2)
 
