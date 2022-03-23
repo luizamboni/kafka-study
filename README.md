@@ -16,3 +16,30 @@ This is a dummy project with the purpose of kafka study with the use of some sma
 We will use [coingecko](https://www.coingecko.com/en/api/documentation) API to give some contexts to project and make it more tasty.
 
 This project uses docker and docker-compose in order to create local environments and Makefile to automatize some tasks.
+
+# kafka stack components
+kafka stack means a set of servers to deliver and receive streams or messages
+with many features and assets
+
+## kakfa
+it s kafka broker itself, where messages are pull and pushed
+
+## zookeper
+it controls a kafka necessary metadata, has already a discussion in comunity about strip
+out 
+
+## schema-registry
+where producers registry the schemas as Avro, JsonSchema, ProtoBuff and
+consumers loads it ones.
+SchemaRegistry works as http API and use kafka as your storage for schemas.
+
+## kafka-rest
+...
+
+## ksqldb-server
+...
+
+## kafka-connect
+It s a integration of sources and syncs with kafka by "plug and play" based in declarative configs.
+For exemple:
+mysql table -> kafka topic -> kibana index
