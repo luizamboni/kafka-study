@@ -3,7 +3,6 @@ import time
 import argparse
 from typing import Optional
 from commons import default_topic_config
-
 class ArgsInterface:
   host: Optional[str]
   topic: Optional[str]

@@ -1,5 +1,3 @@
-from email.policy import default
-
 # see here https://docs.confluent.io/platform/current/installation/configuration/topic-configs.html
 default_topic_config = {
     "cleanup.policy": "compact",
