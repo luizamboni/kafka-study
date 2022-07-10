@@ -9,10 +9,13 @@
     "s3.part.size": "5242880",
     "flush.size": "3",
     "storage.class": "io.confluent.connect.s3.storage.S3Storage",
-    "format.class": "io.confluent.connect.s3.format.avro.AvroFormat",
+    "format.class": "io.confluent.connect.s3.format.parquet.ParquetFormat",
     "schema.generator.class": "io.confluent.connect.storage.hive.schema.DefaultSchemaGenerator",
-    "partitioner.class": "io.confluent.connect.storage.partitioner.DefaultPartitioner",
+    "partitioner.class": "io.confluent.connect.storage.partitioner.HourlyPartitioner",
     "schema.compatibility": "NONE",
+    "locale": "pt_BR",
+    "timezone": "UTC" ,
+    "timestamp.extractor": "Record",
     "name": "s3-sink"
   }
 }

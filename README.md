@@ -43,3 +43,10 @@ SchemaRegistry works as http API and use kafka as your storage for schemas.
 It s a integration of sources and syncs with kafka by "plug and play" based in declarative configs.
 For exemple:
 mysql table -> kafka topic -> kibana index
+
+
+### 
+https://github.com/confluentinc/kafka-connect-storage-cloud/
+
+## partitioners
+https://github.com/confluentinc/kafka-connect-storage-common/tree/master/partitioner/src/main/java/io/confluent/connect/storage/partitioner
