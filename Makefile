@@ -38,6 +38,11 @@ kafka-to-pg:
 	-H 'Content-Type: application/json' \
 	-d '$(shell cat connector/kafka-to-pg.json)'
 
+kafka-to-s3:
+	curl -X POST http://localhost:8083/connectors \
+	-H 'Content-Type: application/json' \
+	-d '$(shell cat connector/kafka-to-s3.json)'
+
 check-pg:
 	docker-compose exec pg \
 	psql -U pg-example \

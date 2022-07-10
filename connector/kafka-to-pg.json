@@ -4,7 +4,6 @@
       "connector.class": "io.confluent.connect.jdbc.JdbcSinkConnector",
       "tasks.max": "1",
       "topics": "test_arvro_schema",
-      
       "connection.url": "jdbc:postgresql://pg:5432/pg-example",
       "connection.user": "pg-example",
       "connection.password": "pg-example",
