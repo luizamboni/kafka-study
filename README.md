@@ -32,6 +32,17 @@ out
 where producers registry the schemas as Avro, JsonSchema, ProtoBuff and
 consumers loads it ones.
 SchemaRegistry works as http API and use kafka as your storage for schemas.
+### The REST Api
+subjects
+```shell
+    curl localhost:8081/subjects  | jq '.'
+```
+
+schemas will responds our Avro(in example) schemas, a descriptions of fields
+```shell
+    curl localhost:8081/schemas  | jq '.'
+```
+
 
 ## kafka-rest
 ...
@@ -50,3 +61,5 @@ https://github.com/confluentinc/kafka-connect-storage-cloud/
 
 ## partitioners
 https://github.com/confluentinc/kafka-connect-storage-common/tree/master/partitioner/src/main/java/io/confluent/connect/storage/partitioner
+
+
