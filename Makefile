@@ -47,3 +47,13 @@ check-pg:
 	docker-compose exec pg \
 	psql -U pg-example \
 	-c 'SELECT * FROM test_arvro_schema'
+
+
+http-server:
+	docker-compose run --rm \
+		-p 9001:9001 \
+		kafka-clients \
+		python ./examples/avro/http-server.py \
+		--host=kafka:9092 \
+		--registry=http://schema-registry:8081 \
+		--topic=test_arvro_schema

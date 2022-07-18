@@ -18,8 +18,7 @@ value_schema_str = """
    "type": "record",
    "fields" : [
      {
-       "name" : "name",
-       "type" : "string"
+       "name" : "name", "type" : "string"
      }
    ]
 }
@@ -32,8 +31,7 @@ key_schema_str = """
    "type": "record",
    "fields" : [
      {
-       "name" : "name",
-       "type" : "string"
+       "name" : "name", "type" : "string"
      }
    ]
 }
