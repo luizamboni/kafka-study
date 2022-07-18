@@ -2,7 +2,7 @@ up:
 	docker-compose up zookeeper kafka kafka-admin connect pg
 
 down:
-	docker-compose down
+	docker-compose down --remove-orphans
 
 setup:
 	docker-compose run --rm kafka-clients \
@@ -57,3 +57,18 @@ http-server:
 		--host=kafka:9092 \
 		--registry=http://schema-registry:8081 \
 		--topic=test_arvro_schema
+
+up-ksql-example:
+	docker-compose up \
+		zookeeper kafka kafka-admin \
+		ksqldb-server ksqldb-cli
+
+
+down-ksql-example:
+	docker-compose down \
+		 zookeeper kafka kafka-admin \
+		 ksqldb-server ksqldb-cli
+
+
+ksql-cli:
+	docker exec -it ksqldb-cli ksql http://ksqldb-server:8088
