@@ -3,3 +3,5 @@ pycoingecko==2.1.0
 confluent-kafka==1.8.2
 avro-python3==1.10.2
 avro==1.11.0
+Faker==13.15.0
+

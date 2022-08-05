@@ -19,6 +19,10 @@ consumer:
 	python examples/coin-gecko/coin-gecko-to-kafka.py \
 	--host=kafka:9092
 
+faker-example:
+	docker-compose run --rm kafka-clients \
+		python examples/faker-example.py
+
 avro-consumer:
 	docker-compose run --rm kafka-clients \
 		python examples/avro/avro-consumer.py \
