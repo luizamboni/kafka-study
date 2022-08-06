@@ -42,6 +42,7 @@ services:
     depends_on:
       - zookeeper
       - kafka
+    restart: unless-stopped
 
   schema-registry:
     image: confluentinc/cp-schema-registry:7.0.1

@@ -21,7 +21,10 @@ consumer:
 
 faker-example:
 	docker-compose run --rm kafka-clients \
-		python examples/faker-example.py
+		python examples/faker-example.py \
+		--host=kafka:9092 \
+		--registry=http://schema-registry:8081 \
+		--topic=test_arvro_schema
 
 avro-consumer:
 	docker-compose run --rm kafka-clients \

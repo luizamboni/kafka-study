@@ -75,5 +75,10 @@ https://github.com/confluentinc/kafka-connect-storage-common/tree/master/partiti
 
 - Orders
     - id
-    - visit_id
     - product_id
+    - click_id
+
+- Visits
+    - id
+
+
