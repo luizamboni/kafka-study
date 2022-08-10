@@ -1,3 +1,5 @@
+BROKER_ENDPOINTS=kafka:9092
+
 up:
 	docker-compose up zookeeper kafka kafka-admin connect pg
 
@@ -7,11 +9,11 @@ down:
 setup:
 	docker-compose run --rm kafka-clients \
 		python setup.py \
-		--host=kafka:9092 \
+		--host=${BROKER_ENDPOINTS} \
 		--topic=coins
 	docker-compose run --rm kafka-clients \
 		python setup.py \
-		--host=kafka:9092 \
+		--host=${BROKER_ENDPOINTS} \
 		--topic=coins_history
 
 consumer:
@@ -22,16 +24,37 @@ consumer:
 faker-example:
 	docker-compose run --rm kafka-clients \
 		python examples/faker-example.py \
-		--host=kafka:9092 \
+		--host=${BROKER_ENDPOINTS} \
 		--registry=http://schema-registry:8081 \
 		--topic=test_arvro_schema
 
 avro-consumer:
 	docker-compose run --rm kafka-clients \
 		python examples/avro/avro-consumer.py \
-		--host=kafka:9092 \
+		--host=${BROKER_ENDPOINTS} \
 		--registry=http://schema-registry:8081 \
 		--topic=test_arvro_schema
+
+basic-consumer:
+	docker-compose run --rm kafka-clients \
+		python examples/basic-consumer.py \
+		--host=${BROKER_ENDPOINTS} \
+		--security-protocol=SSL \
+		--topic=test-topic
+
+basic-producer:
+	docker-compose run --rm kafka-clients \
+		python examples/basic-producer.py \
+		--host=${BROKER_ENDPOINTS} \
+		--security-protocol=SSL \
+		--topic=test-topic
+
+basic-admin:
+	docker-compose run --rm kafka-clients \
+		python examples/basic-admin.py \
+		--host=${BROKER_ENDPOINTS} \
+		--security-protocol=SSL \
+		--topic=test-topic
 
 avro-producer:
 	docker-compose run --rm kafka-clients \
@@ -61,7 +84,7 @@ http-server:
 		-p 9001:9001 \
 		kafka-clients \
 		python ./examples/avro/http-server.py \
-		--host=kafka:9092 \
+		--host=${BROKER_ENDPOINTS} \
 		--registry=http://schema-registry:8081 \
 		--topic=test_arvro_schema
 
