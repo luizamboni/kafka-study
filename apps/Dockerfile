@@ -2,7 +2,6 @@ from python:3.8
 
 WORKDIR /home/apps
 COPY . .
-RUN apt update
-RUN apt install librdkafka-dev build-assential awscli
+RUN apt-get update
+RUN apt-get install librdkafka-dev awscli -y
 RUN pip install -r requirements.txt
-

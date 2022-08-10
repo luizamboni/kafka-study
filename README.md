@@ -63,3 +63,22 @@ https://github.com/confluentinc/kafka-connect-storage-cloud/
 https://github.com/confluentinc/kafka-connect-storage-common/tree/master/partitioner/src/main/java/io/confluent/connect/storage/partitioner
 
 
+# Avro Example
+- Products
+    - id
+    - name
+
+- Clicks
+    - id uuid
+    - product_id
+    - visit_id
+
+- Orders
+    - id
+    - product_id
+    - click_id
+
+- Visits
+    - id
+
+
