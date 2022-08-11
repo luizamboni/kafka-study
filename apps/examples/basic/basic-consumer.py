@@ -1,6 +1,6 @@
+import json
 from kafka import KafkaConsumer
 import argparse
-import uuid
 
 def get_args():
   parser = argparse.ArgumentParser()
@@ -16,7 +16,7 @@ print("args:", args)
 consumer = KafkaConsumer(
     args.topic,
     security_protocol=args.security_protocol,
-    group_id='my-group-2',
+    group_id='group-id',
     auto_offset_reset="earliest",
     bootstrap_servers=args.host.split(",")
 )
@@ -24,11 +24,13 @@ consumer = KafkaConsumer(
 print("configured")
 for message in consumer:
 
-    print(message)
+    # print(message)
     # message value and key are raw bytes -- decode if necessary!
     # e.g., for unicode: `message.value.decode('utf-8')`
-    print ("%s:%d:%d: key=%s value=%s" % (message.topic, message.partition,
+    print("%s:%d:%d: key=%s value=%s" % (message.topic, message.partition,
                                           message.offset, message.key,
                                           message.value))
+
+    print(json.loads(message.value))
 
 

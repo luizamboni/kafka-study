@@ -1,4 +1,8 @@
 BROKER_ENDPOINTS=kafka:9092
+TOPIC_GLUE_EXAMPLES=registry-schema-test
+TOPIC_GENERIC_AVRO=test_arvro_schema
+SECURITY_PROTOCOL=SSL
+GLUE_REGISTRY=registry-test 
 
 up:
 	docker-compose up zookeeper kafka kafka-admin connect pg
@@ -26,42 +30,58 @@ faker-example:
 		python examples/faker-example.py \
 		--host=${BROKER_ENDPOINTS} \
 		--registry=http://schema-registry:8081 \
-		--topic=test_arvro_schema
+		--topic=${TOPIC_GENERIC_AVRO}
 
 avro-consumer:
 	docker-compose run --rm kafka-clients \
 		python examples/avro/avro-consumer.py \
 		--host=${BROKER_ENDPOINTS} \
 		--registry=http://schema-registry:8081 \
-		--topic=test_arvro_schema
+		--topic=${TOPIC_GENERIC_AVRO}
 
 basic-consumer:
 	docker-compose run --rm kafka-clients \
-		python examples/basic-consumer.py \
+		python examples/basic/basic-consumer.py \
 		--host=${BROKER_ENDPOINTS} \
-		--security-protocol=SSL \
-		--topic=test-topic
+		--security-protocol=${SECURITY_PROTOCOL} \
+		--topic=${TOPIC_BASIC_EXAMPLES}
 
 basic-producer:
 	docker-compose run --rm kafka-clients \
-		python examples/basic-producer.py \
+		python examples/basic/basic-producer.py \
 		--host=${BROKER_ENDPOINTS} \
-		--security-protocol=SSL \
-		--topic=test-topic
+		--security-protocol=${SECURITY_PROTOCOL} \
+		--topic=${TOPIC_BASIC_EXAMPLES}
 
 basic-admin:
 	docker-compose run --rm kafka-clients \
-		python examples/basic-admin.py \
+		python examples/basic/basic-admin.py \
 		--host=${BROKER_ENDPOINTS} \
-		--security-protocol=SSL \
-		--topic=test-topic
+		--security-protocol=${SECURITY_PROTOCOL} \
+		--topic=${TOPIC_BASIC_EXAMPLES}
+
+glue-producer:
+	docker-compose run --rm kafka-clients \
+		python examples/glue/glue-producer.py \
+		--host=${BROKER_ENDPOINTS} \
+		--security-protocol=${SECURITY_PROTOCOL} \
+		--topic=${TOPIC_GLUE_EXAMPLES} \
+		--registry-name=${GLUE_REGISTRY}
+
+glue-consumer:
+	docker-compose run --rm kafka-clients \
+		python examples/glue/glue-consumer.py \
+		--host=${BROKER_ENDPOINTS} \
+		--security-protocol=${SECURITY_PROTOCOL} \
+		--topic=${TOPIC_GLUE_EXAMPLES} \
+		--registry-name=${GLUE_REGISTRY}
 
 avro-producer:
 	docker-compose run --rm kafka-clients \
 		python examples/avro/avro-producer.py \
 		--host=kafka:9092 \
 		--registry=http://schema-registry:8081 \
-		--topic=test_arvro_schema
+		--topic=${TOPIC_GENERIC_AVRO}
 
 kafka-to-pg:
 	curl -X POST http://localhost:8083/connectors \
@@ -86,7 +106,7 @@ http-server:
 		python ./examples/avro/http-server.py \
 		--host=${BROKER_ENDPOINTS} \
 		--registry=http://schema-registry:8081 \
-		--topic=test_arvro_schema
+		--topic=${TOPIC_GENERIC_AVRO}
 
 up-ksql-example:
 	docker-compose up \

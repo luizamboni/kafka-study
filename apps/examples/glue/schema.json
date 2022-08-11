@@ -1,0 +1,44 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "properties": {
+        "Scope": {
+            "type": "string"
+        },
+        "Version": {
+            "type": "string"
+        },
+        "Payload": {
+            "type": "object",
+            "properties": {
+                "required_field": {
+                    "type": "string"
+                },
+                "struct_field": {
+                "type": "object",
+                "properties": {
+                    "text_field": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "text_field"
+                ]
+            }
+        },
+        "required": [
+            "required_field",
+            "struct_field"
+        ]
+        },
+        "Name": {
+            "type": "string"
+        }
+    },
+    "required": [
+        "Scope",
+        "Version",
+        "Payload",
+        "Name"
+    ]
+}
