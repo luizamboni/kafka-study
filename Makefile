@@ -1,8 +1,8 @@
 BROKER_ENDPOINTS=kafka:9092
 TOPIC_GLUE_EXAMPLES=registry-schema-test
 TOPIC_GENERIC_AVRO=test_arvro_schema
-SECURITY_PROTOCOL=SSL
-GLUE_REGISTRY=registry-test 
+SECURITY_PROTOCOL=PLAINTEXT
+GLUE_REGISTRY=registry-test
 
 up:
 	docker-compose up zookeeper kafka kafka-admin connect pg
