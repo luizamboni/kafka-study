@@ -41,8 +41,9 @@ producer = KafkaProducer(
     bootstrap_servers=args.host.split(",")
 )
 
+schema_value = None
 with open(f"{os.path.dirname(__file__)}/schema.json", 'r') as schema_file:
-    schema = JsonSchema(schema_file.read())
+    schema_value = JsonSchema(schema_file.read())
 
 # Send message data along with schema
 
@@ -60,6 +61,6 @@ data = {
 
 for _ in range(10):
     print("sending:", data)
-    producer.send(args.topic, value=(data, schema))
+    producer.send(args.topic, value=(data, schema_value))
 
 producer.flush()

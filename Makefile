@@ -1,8 +1,9 @@
-BROKER_ENDPOINTS=kafka:9092
+BROKER_ENDPOINTS=broker:9092
 TOPIC_GLUE_EXAMPLES=registry-schema-test
 TOPIC_GENERIC_AVRO=test_arvro_schema
 SECURITY_PROTOCOL=PLAINTEXT
 GLUE_REGISTRY=registry-test
+CONFLUENT_REGISTRY=http://schema-registry:8081
 
 up:
 	docker-compose up zookeeper kafka kafka-admin connect pg
@@ -23,20 +24,27 @@ setup:
 consumer:
 	docker-compose run --rm kafka-clients \
 	python examples/coin-gecko/coin-gecko-to-kafka.py \
-	--host=kafka:9092
+	--host=${BROKER_ENDPOINTS} \
 
 faker-example:
 	docker-compose run --rm kafka-clients \
 		python examples/faker-example.py \
 		--host=${BROKER_ENDPOINTS} \
-		--registry=http://schema-registry:8081 \
+		--registry=${CONFLUENT_REGISTRY} \
 		--topic=${TOPIC_GENERIC_AVRO}
 
 avro-consumer:
 	docker-compose run --rm kafka-clients \
 		python examples/avro/avro-consumer.py \
 		--host=${BROKER_ENDPOINTS} \
-		--registry=http://schema-registry:8081 \
+		--registry=${CONFLUENT_REGISTRY} \
+		--topic=${TOPIC_GENERIC_AVRO}
+
+avro-producer:
+	docker-compose run --rm kafka-clients \
+		python examples/avro/avro-producer.py \
+		--host=${BROKER_ENDPOINTS} \
+		--registry=${CONFLUENT_REGISTRY} \
 		--topic=${TOPIC_GENERIC_AVRO}
 
 basic-consumer:
@@ -76,13 +84,6 @@ glue-consumer:
 		--topic=${TOPIC_GLUE_EXAMPLES} \
 		--registry-name=${GLUE_REGISTRY}
 
-avro-producer:
-	docker-compose run --rm kafka-clients \
-		python examples/avro/avro-producer.py \
-		--host=kafka:9092 \
-		--registry=http://schema-registry:8081 \
-		--topic=${TOPIC_GENERIC_AVRO}
-
 kafka-to-pg:
 	curl -X POST http://localhost:8083/connectors \
 	-H 'Content-Type: application/json' \
@@ -96,7 +97,7 @@ kafka-to-s3:
 check-pg:
 	docker-compose exec pg \
 	psql -U pg-example \
-	-c 'SELECT * FROM test_arvro_schema'
+	-c 'SELECT * FROM ${TOPIC_GENERIC_AVRO}'
 
 
 http-server:
@@ -105,7 +106,7 @@ http-server:
 		kafka-clients \
 		python ./examples/avro/http-server.py \
 		--host=${BROKER_ENDPOINTS} \
-		--registry=http://schema-registry:8081 \
+		--registry=${CONFLUENT_REGISTRY} \
 		--topic=${TOPIC_GENERIC_AVRO}
 
 up-ksql-example:

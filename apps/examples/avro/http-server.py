@@ -4,6 +4,7 @@ from confluent_kafka import avro
 from confluent_kafka.avro import AvroProducer
 import argparse
 import json
+import os
 
 
 def get_args():
@@ -14,34 +15,13 @@ def get_args():
   return parser.parse_args()
 
 
-value_schema_str = """
-{
-   "namespace": "my.test",
-   "name": "value",
-   "type": "record",
-   "fields" : [
-     {
-       "name" : "name", "type" : "string"
-     }
-   ]
-}
-"""
+value_schema = None
+with open(f"{os.path.dirname(__file__)}/schema-value.json", 'r') as schema_file:
+    value_schema = avro.loads(schema_file.read())
 
-key_schema_str = """
-{
-   "namespace": "my.test",
-   "name": "key",
-   "type": "record",
-   "fields" : [
-     {
-       "name" : "name", "type" : "string"
-     }
-   ]
-}
-"""
-
-value_schema = avro.loads(value_schema_str)
-key_schema = avro.loads(key_schema_str)
+key_schema = None
+with open(f"{os.path.dirname(__file__)}/schema-key.json", 'r') as schema_file:
+    key_schema = avro.loads(schema_file.read())
 
 def delivery_report(err, msg):
     if err is not None:

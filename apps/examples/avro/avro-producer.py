@@ -1,7 +1,7 @@
 from confluent_kafka import avro
 from confluent_kafka.avro import AvroProducer
 import argparse
-
+import os
 
 def get_args():
   parser = argparse.ArgumentParser()
@@ -11,34 +11,15 @@ def get_args():
   return parser.parse_args()
 
 
-value_schema_str = """
-{
-   "namespace": "my.test",
-   "name": "value",
-   "type": "record",
-   "fields" : [
-     {
-       "name" : "name", "type" : "string"
-     }
-   ]
-}
-"""
 
-key_schema_str = """
-{
-   "namespace": "my.test",
-   "name": "key",
-   "type": "record",
-   "fields" : [
-     {
-       "name" : "name", "type" : "string"
-     }
-   ]
-}
-"""
+value_schema = None
+with open(f"{os.path.dirname(__file__)}/schema-value.json", 'r') as schema_file:
+    value_schema = avro.loads(schema_file.read())
 
-value_schema = avro.loads(value_schema_str)
-key_schema = avro.loads(key_schema_str)
+key_schema = None
+with open(f"{os.path.dirname(__file__)}/schema-key.json", 'r') as schema_file:
+    key_schema = avro.loads(schema_file.read())
+
 
 def delivery_report(err, msg):
     if err is not None:
@@ -47,14 +28,15 @@ def delivery_report(err, msg):
         print(f"Message delivered to {msg.topic()} [{msg.partition()}]")
 
 args = get_args()
+print(args)
 
 avroProducer = AvroProducer({
-        'bootstrap.servers': args.host,
-        'on_delivery': delivery_report,
-        'schema.registry.url': args.registry
-    }, 
-    default_key_schema=key_schema, 
-    default_value_schema=value_schema
+    'bootstrap.servers': args.host,
+    'on_delivery': delivery_report,
+    'schema.registry.url': args.registry
+  }, 
+  default_key_schema=key_schema, 
+  default_value_schema=value_schema
 )
 
 
