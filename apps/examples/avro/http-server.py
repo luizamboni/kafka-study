@@ -16,11 +16,11 @@ def get_args():
 
 
 value_schema = None
-with open(f"{os.path.dirname(__file__)}/schema-value.json", 'r') as schema_file:
+with open(f"{os.path.dirname(__file__)}/avroschema-value.json", 'r') as schema_file:
     value_schema = avro.loads(schema_file.read())
 
 key_schema = None
-with open(f"{os.path.dirname(__file__)}/schema-key.json", 'r') as schema_file:
+with open(f"{os.path.dirname(__file__)}/avroschema-key.json", 'r') as schema_file:
     key_schema = avro.loads(schema_file.read())
 
 def delivery_report(err, msg):

@@ -42,7 +42,7 @@ producer = KafkaProducer(
 )
 
 schema_value = None
-with open(f"{os.path.dirname(__file__)}/schema.json", 'r') as schema_file:
+with open(f"{os.path.dirname(__file__)}/jsonschema-value.json", 'r') as schema_file:
     schema_value = JsonSchema(schema_file.read())
 
 # Send message data along with schema
