@@ -51,11 +51,14 @@ In cara of Glue this header its compose of 18 bytes prefixing the payload.
 
 |  0          |      1    |     2-17       |
 |:------------:|-----------:|:------------:|
-|8 bit version| 1 about compression| is a 128 bytes uuid
-create without schema-registry
+|8 bit version| 1 about compression| is a 128 bytes uuid |
+
+create without schema-registry:
+
 ```b{'Scope': 'dev', 'Name': 'testevent', 'Version': 'v0', 'Payload': {'required_field': 'valor do required_field', 'struct_field': {'text_field': 'valor do text_field'}}}```
 
-created by aws_glue_schema_registry producer
+created by aws_glue_schema_registry producer:
+
 ```b\x03\x00\x13\xc0d\x87W\xd3E\x15\xa9\x18\xb6\x8a\x0f\x7f\xa0\xf0{"Scope":"dev","Version":"v0","Payload":{"required_field":"valor do required_field","struct_field":{"text_field":"valor do text_field"}},"Name":"testevent"}```
 
 
