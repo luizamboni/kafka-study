@@ -4,6 +4,7 @@ TOPIC_GENERIC_AVRO=test_arvro_schema
 SECURITY_PROTOCOL=PLAINTEXT
 GLUE_REGISTRY=registry-test
 CONFLUENT_REGISTRY=http://schema-registry:8081
+TOPIC_BASIC_EXAMPLES=test_arvro_schema
 
 up:
 	docker-compose up zookeeper kafka kafka-admin connect pg

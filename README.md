@@ -32,22 +32,34 @@ out
 where producers registry the schemas as Avro, JsonSchema, ProtoBuff and
 consumers loads it ones.
 SchemaRegistry works as http API and use kafka as your storage for schemas.
+
+OBS: Confluent Schema Registry add a header in raw message this header its compose of 5 bytes prefixing the payload.
+
+|  0     |      1-4    |
+|:------------:|-----------:|
+| unsigned char | unsigned int |
+
+the schema_id can be retreived by sample code
+```
+value = b'\x00\x00\x00\x00\x01\x0485'
+magic, schema_id = struct.unpack('>bI', value[:5])
+print(magic, schema_id)
+```
 ### The REST Api
 subjects
 ```shell
-    curl localhost:8081/subjects  | jq '.'
+    curl localhost:8081/subjects | jq '.'
 ```
 
 schemas will responds our Avro(in example) schemas, a descriptions of fields
 ```shell
-    curl localhost:8081/schemas  | jq '.'
+    curl localhost:8081/schemas | jq '.'
 ```
 ## Glue Schema Registry
 
 Aws Glue can be used as schema Registry too.
 
-OBS: schema Registries add a header in raw message
-In cara of Glue this header its compose of 18 bytes prefixing the payload.
+OBS: Glue Schema Registry add a header in raw message this header its compose of 18 bytes prefixing the payload.
 
 |  0          |      1    |     2-17       |
 |:------------:|-----------:|:------------:|
