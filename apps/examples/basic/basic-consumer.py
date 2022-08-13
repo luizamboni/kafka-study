@@ -1,14 +1,16 @@
-import json
 from kafka import KafkaConsumer
 import argparse
 import struct
 import requests
+import os
+
 
 def get_args():
   parser = argparse.ArgumentParser()
   parser.add_argument('--host')
   parser.add_argument('--topic')
   parser.add_argument("--security-protocol")
+  parser.add_argument("--schema-registry")
   return parser.parse_args()
 
 args = get_args()
@@ -29,7 +31,7 @@ for message in consumer:
     try: 
       magic, schema_id = struct.unpack('>bI', message.value[:5])
       print(magic, schema_id)
-      schema_url = f"http://schema-registry:8081/subjects/{args.topic}-value/versions/{schema_id}"
+      schema_url = f"{args.schema_registry}/subjects/{args.topic}-value/versions/{schema_id}"
       print(f"try recover schema by {schema_url}")
       schema = requests.get(schema_url, headers={'Content-Type': 'application/json'})
       print(schema.json())
@@ -39,8 +41,7 @@ for message in consumer:
     except Exception as e:
       print(e)
     
-    print("%s:%d:%d: key=%s value=%s" % (message.topic, message.partition,
-                                          message.offset, message.key,
-                                          message.value))
+    print("topic=%s partition=%d offset=%d key=%s value=%s" % (message.topic, message.partition, message.offset, message.key, message.value))
 
 
+os.exit()

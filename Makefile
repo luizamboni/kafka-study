@@ -1,16 +1,10 @@
-BROKER_ENDPOINTS=broker:9092
-TOPIC_GLUE_EXAMPLES=registry-schema-test
-TOPIC_GENERIC_AVRO=test_arvro_schema
-SECURITY_PROTOCOL=PLAINTEXT
-GLUE_REGISTRY=registry-test
-CONFLUENT_REGISTRY=http://schema-registry:8081
-TOPIC_BASIC_EXAMPLES=test_arvro_schema
+include .env
 
 up:
-	docker-compose up zookeeper kafka kafka-admin connect pg
+	docker-compose up && docker-compose up
 
-down:
-	docker-compose down --remove-orphans
+up-reset:
+	docker-compose down  --volumes --remove-orphans && docker-compose up
 
 setup:
 	docker-compose run --rm kafka-clients \
@@ -53,7 +47,8 @@ basic-consumer:
 		python examples/basic/basic-consumer.py \
 		--host=${BROKER_ENDPOINTS} \
 		--security-protocol=${SECURITY_PROTOCOL} \
-		--topic=${TOPIC_BASIC_EXAMPLES}
+		--topic=${TOPIC_BASIC_EXAMPLES} \
+		--schema-registry=${CONFLUENT_REGISTRY}
 
 basic-producer:
 	docker-compose run --rm kafka-clients \
@@ -124,3 +119,20 @@ down-ksql-example:
 
 ksql-cli:
 	docker exec -it ksqldb-cli ksql http://ksqldb-server:8088
+
+
+json-schema-producer:
+	docker-compose run --rm kafka-clients \
+		python examples/json/json-producer.py \
+		--host=${BROKER_ENDPOINTS} \
+		--security-protocol=${SECURITY_PROTOCOL} \
+		--topic=${TOPIC_GENERIC_JSON} \
+		--schema-registry=${CONFLUENT_REGISTRY}
+
+json-schema-consumer:
+	docker-compose run --rm kafka-clients \
+		python examples/json/json-consumer.py \
+		--host=${BROKER_ENDPOINTS} \
+		--security-protocol=${SECURITY_PROTOCOL} \
+		--topic=${TOPIC_GENERIC_JSON} \
+		--schema-registry=${CONFLUENT_REGISTRY}

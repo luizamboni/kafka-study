@@ -1,9 +1,9 @@
 kafka-python==2.0.2
 pycoingecko==2.1.0
-confluent-kafka==1.8.2
+confluent-kafka==1.9.0
 avro-python3==1.10.2
-avro==1.11.0
 Faker==13.15.0
 aws-glue-schema-registry==1.1.2
 
-
+jsonschema==4.9.1
+avro==1.11.0
