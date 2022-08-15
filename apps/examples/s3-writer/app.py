@@ -34,11 +34,24 @@ class SetInterval:
 
 class Buffer:
 
-    def __init__(self, number_of_messages, bucket, path_prefix) -> None:
+    def __init__(self, number_of_messages, bucket, path_prefix, database) -> None:
+
+        self.database = database
         self.number_of_messages = number_of_messages
         self.bucket = bucket
         self.path_prefix = path_prefix
         self.acc = []
+        self.init_database()
+
+    def init_database(self):
+        
+        databases = wr.catalog.databases()
+
+        if self.database not in databases.values:
+            wr.catalog.create_database(self.database)
+            print(wr.catalog.databases())
+        else:
+            print("Database awswrangler_test already exists")
 
     def add(self, key, value): 
         self.acc.append((key, value))
@@ -74,7 +87,7 @@ class Buffer:
             paths = {}
             for row in group_df.itertuples():
                 scope, version, name = row._asdict()["Index"]
-                paths[scope + name + version ] = (
+                paths[scope + "_" + name + "_" + version ] = (
                     self.replace_path({ "Scope": scope, "Version": version, "Name": name }),
                     { "Scope": scope, "Version": version, "Name": name }
                 )
@@ -86,13 +99,31 @@ class Buffer:
                     .where(df.Name == paths[key][1]["Name"]) \
 
 
-                wr.s3.to_parquet(
+                res = wr.s3.to_parquet(
                     df=write_df,
                     path=f"s3://{self.bucket}/{paths[key][0]}/",
                     dataset=True,
                     mode="append",
+                    database=self.database,
+                    compression="snappy",
+                    table=key,
                     partition_cols=["date", "hour"]
                 )
+
+                wr.catalog.table(database=self.database, table=key)
+
+
+                # output response
+                # {
+                #     'paths': [
+                #         's3://confluent-kafka-connect-s3-study/tables/prod/event/testevent/v0/date=2022-08-15/hour=19/d71733e4825b44279e05993e4dbda836.snappy.parquet'
+                #     ], 
+                #     'partitions_values': {
+                #         's3://confluent-kafka-connect-s3-study/tables/prod/event/testevent/v0/date=2022-08-15/hour=19/': ['2022-08-15', '19']
+                #     }
+                # }
+
+                print(res)
 
             self.acc = []
 
@@ -106,6 +137,7 @@ def get_args():
   parser.add_argument("--buffer-limit-in-seconds", type=float)
   parser.add_argument("--buffer-limit-in-units", type=int)
   parser.add_argument("--path-prefix")
+  parser.add_argument("--database")
 
   return parser.parse_args()
 
@@ -151,7 +183,8 @@ schema_registry = SchemaRegistry(args.schema_registry)
 write_buffer = Buffer(
     number_of_messages=args.buffer_limit_in_units,
     bucket=args.bucket, 
-    path_prefix=args.path_prefix
+    path_prefix=args.path_prefix,
+    database=args.database
 )
 
 SetInterval(

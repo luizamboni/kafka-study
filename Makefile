@@ -148,4 +148,5 @@ s3-writer:
 		--bucket=${BUCKET} \
 		--buffer-limit-in-seconds=10.0 \
 		--buffer-limit-in-units=1000 \
+		--database=mammoth \
 		--path-prefix='tables/{scope}/event/{name}/{version}'
