@@ -5,7 +5,7 @@ from confluent_kafka.schema_registry.json_schema import JSONSerializer
 import argparse
 import os
 from faker import Faker
-
+from datetime import datetime
 
 
 def get_args():
@@ -37,7 +37,8 @@ producer = SerializingProducer({
     'bootstrap.servers': args.host,
     'security.protocol': args.security_protocol,
     'key.serializer': StringSerializer('utf_8'),
-    'value.serializer': json_serializer
+    'value.serializer': json_serializer,
+    'api.version.request': True
 })
 
 
@@ -46,16 +47,17 @@ faker = Faker()
 
 for n in range(100):
     data = {
-    'Scope': faker.random_element(elements=["dev", "prod"]), 
-    'Version': faker.random_element(elements=["v0", "v1", "v2"]),
-    'Payload': {
-        'required_field': faker.random_element(elements=["abc", "zyz"]), 
-        'struct_field': {
-            'text_field': 'valor do text_field'
-        }
-    }, 
-    'Name': 'testevent'
-}
+        'Timestamp': str(datetime.now()) , 
+        'Scope': faker.random_element(elements=["dev", "prod"]), 
+        'Version': faker.random_element(elements=["v0", "v1", "v2"]),
+        'Payload': {
+            'required_field': faker.random_element(elements=["abc", "zyz"]), 
+            'struct_field': {
+                'text_field': 'valor do text_field'
+            }
+        }, 
+        'Name': 'testevent'
+    }
     print("sending:", data)
     producer.produce(args.topic, value=data, key=f"{n}")
 

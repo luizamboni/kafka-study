@@ -1,5 +1,5 @@
 import argparse
-from ast import parse
+from sqlite3 import Timestamp
 from kafka import KafkaConsumer
 import argparse
 import struct
@@ -12,6 +12,7 @@ import uuid
 import threading
 import pandas as pd
 import time
+from datetime import datetime
 
 class SetInterval:
     def __init__(self,interval,action) :
@@ -63,24 +64,34 @@ class Buffer:
                     data[key] = list(map(lambda v: v[1][key], self.acc))
 
             df = pd.DataFrame(data=data)
+            df['Timestamp'] = df['Timestamp'].astype('datetime64[ns]')
+
+            df["date"] = df["Timestamp"].dt.date
+            df["hour"] = df["Timestamp"].dt.hour
+            df["hour"] = df["hour"].astype(int).astype(str)
 
             group_df = df.groupby(["Scope", "Version", "Name"]).count()
             paths = {}
             for row in group_df.itertuples():
                 scope, version, name = row._asdict()["Index"]
-                paths[scope + name + version] = (
+                paths[scope + name + version ] = (
                     self.replace_path({ "Scope": scope, "Version": version, "Name": name }),
                     { "Scope": scope, "Version": version, "Name": name }
                 )
 
             for key in paths.keys():
                 print(key, paths[key])
-                write_df = df.where(df.Scope == paths[key][1]["Scope"]).where(df.Version == paths[key][1]["Version"]).where(df.Name == paths[key][1]["Name"])
+                write_df = df.where(df.Scope == paths[key][1]["Scope"]) \
+                    .where(df.Version == paths[key][1]["Version"]) \
+                    .where(df.Name == paths[key][1]["Name"]) \
+
+
                 wr.s3.to_parquet(
                     df=write_df,
                     path=f"s3://{self.bucket}/{paths[key][0]}/",
                     dataset=True,
                     mode="append",
+                    partition_cols=["date", "hour"]
                 )
 
             self.acc = []
@@ -136,6 +147,7 @@ class SchemaRegistry:
 print("configured")
 
 schema_registry = SchemaRegistry(args.schema_registry)
+
 write_buffer = Buffer(
     number_of_messages=args.buffer_limit_in_units,
     bucket=args.bucket, 
@@ -148,7 +160,8 @@ SetInterval(
 )
 
 for message in consumer:
-
+    print(message)
+    print(message.timestamp)
     try:
 
         schema = schema_registry.get_schema_by_payload(message.value)
