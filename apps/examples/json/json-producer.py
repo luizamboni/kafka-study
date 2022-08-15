@@ -4,6 +4,7 @@ from confluent_kafka.schema_registry import SchemaRegistryClient
 from confluent_kafka.schema_registry.json_schema import JSONSerializer
 import argparse
 import os
+from faker import Faker
 
 
 
@@ -41,20 +42,20 @@ producer = SerializingProducer({
 
 
 # Send message data along with schema
+faker = Faker()
 
-data = {
-    'Scope': 'dev', 
-    'Version': 'v0', 
+for n in range(100):
+    data = {
+    'Scope': faker.random_element(elements=["dev", "prod"]), 
+    'Version': faker.random_element(elements=["v0", "v1", "v2"]),
     'Payload': {
-        'required_field': 'valor do required_field', 
+        'required_field': faker.random_element(elements=["abc", "zyz"]), 
         'struct_field': {
             'text_field': 'valor do text_field'
         }
     }, 
     'Name': 'testevent'
 }
-
-for n in range(10):
     print("sending:", data)
     producer.produce(args.topic, value=data, key=f"{n}")
 

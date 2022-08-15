@@ -7,3 +7,7 @@ aws-glue-schema-registry==1.1.2
 
 jsonschema==4.9.1
 avro==1.11.0
+
+
+awswrangler==2.16.1
+jsonschema==4.9.1

@@ -136,3 +136,16 @@ json-schema-consumer:
 		--security-protocol=${SECURITY_PROTOCOL} \
 		--topic=${TOPIC_GENERIC_JSON} \
 		--schema-registry=${CONFLUENT_REGISTRY}
+
+
+s3-writer:
+	docker-compose run --rm kafka-clients \
+		python examples/s3-writer/app.py \
+		--host=${BROKER_ENDPOINTS} \
+		--security-protocol=${SECURITY_PROTOCOL} \
+		--topic=${TOPIC_GENERIC_JSON} \
+		--schema-registry=${CONFLUENT_REGISTRY} \
+		--bucket=${BUCKET} \
+		--buffer-limit-in-seconds=10.0 \
+		--buffer-limit-in-units=1000 \
+		--path-prefix='tables/{scope}/event/{name}/{version}'
