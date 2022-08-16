@@ -14,6 +14,9 @@ import pandas as pd
 import time
 from datetime import datetime
 
+from queue import Queue
+
+
 class SetInterval:
     def __init__(self,interval,action) :
         self.interval=interval
@@ -40,7 +43,7 @@ class Buffer:
         self.number_of_messages = number_of_messages
         self.bucket = bucket
         self.path_prefix = path_prefix
-        self.acc = []
+        self.acc = Queue(maxsize=0)
         self.init_database()
 
     def init_database(self):
@@ -51,11 +54,11 @@ class Buffer:
             wr.catalog.create_database(self.database)
             print(wr.catalog.databases())
         else:
-            print("Database awswrangler_test already exists")
+            print(f"Database {self.database} already exists")
 
     def add(self, key, value): 
-        self.acc.append((key, value))
-        if len(self.acc) >= self.number_of_messages:
+        self.acc.put((key, value))
+        if self.acc.qsize() >= self.number_of_messages:
             self.__call__()
 
     def replace_path(self, event_desc):
@@ -67,21 +70,25 @@ class Buffer:
 
     def __call__(self):
 
-        print("writing parquet", len(self.acc))
+        print("check if need writing anything", self.acc.qsize())
 
-        if len(self.acc) > 0:
+        if not self.acc.empty():
 
             data = {}
-            for item in self.acc:
+
+            items = []
+            while not self.acc.empty():
+                items.append(self.acc.get())
+ 
+            for item in items:
                 for key in item[1].keys():
-                    data[key] = list(map(lambda v: v[1][key], self.acc))
+                    data[key] = list(map(lambda v: v[1][key], items))
 
             df = pd.DataFrame(data=data)
             df['Timestamp'] = df['Timestamp'].astype('datetime64[ns]')
 
             df["date"] = df["Timestamp"].dt.date
-            df["hour"] = df["Timestamp"].dt.hour
-            df["hour"] = df["hour"].astype(int).astype(str)
+            df["hour"] = df["Timestamp"].dt.hour.astype(int).astype(str)
 
             group_df = df.groupby(["Scope", "Version", "Name"]).count()
             paths = {}
@@ -96,7 +103,7 @@ class Buffer:
                 print(key, paths[key])
                 write_df = df.where(df.Scope == paths[key][1]["Scope"]) \
                     .where(df.Version == paths[key][1]["Version"]) \
-                    .where(df.Name == paths[key][1]["Name"]) \
+                    .where(df.Name == paths[key][1]["Name"])
 
 
                 res = wr.s3.to_parquet(
@@ -124,8 +131,6 @@ class Buffer:
                 # }
 
                 print(res)
-
-            self.acc = []
 
 def get_args():
   parser = argparse.ArgumentParser()
@@ -193,8 +198,7 @@ SetInterval(
 )
 
 for message in consumer:
-    print(message)
-    print(message.timestamp)
+    # print(message)
     try:
 
         schema = schema_registry.get_schema_by_payload(message.value)
