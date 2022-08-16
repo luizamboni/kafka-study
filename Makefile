@@ -127,7 +127,8 @@ json-schema-producer:
 		--host=${BROKER_ENDPOINTS} \
 		--security-protocol=${SECURITY_PROTOCOL} \
 		--topic=${TOPIC_GENERIC_JSON} \
-		--schema-registry=${CONFLUENT_REGISTRY}
+		--schema-registry=${CONFLUENT_REGISTRY} \
+		--max-interval-in-seconds=0.1
 
 json-schema-consumer:
 	docker-compose run --rm kafka-clients \
@@ -149,4 +150,4 @@ s3-writer:
 		--buffer-limit-in-seconds=10.0 \
 		--buffer-limit-in-units=1000 \
 		--database=mammoth \
-		--path-prefix='tables/{scope}/event/{name}/{version}'
+		--path-prefix='tables/{scope}/event/{name}/{version}' \
