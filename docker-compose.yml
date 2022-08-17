@@ -231,12 +231,3 @@ services:
                 security.protocol: ${SECURITY_PROTOCOL}
                 bootstrap.servers: ${BROKER_ENDPOINTS}
     restart: unless-stopped
-
-  kafdrop:
-    image: obsidiandynamics/kafdrop:3.27.0
-    ports:
-      - 9000:9000
-    environment:
-      KAFDROP_KAFKA_PROPERTIES: ${KAFDROP_KAFKA_PROPERTIES}
-      KAFKA_BROKERCONNECT: ${BROKER_ENDPOINTS}
-    restart: unless-stopped
