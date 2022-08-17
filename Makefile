@@ -64,21 +64,30 @@ basic-admin:
 		--security-protocol=${SECURITY_PROTOCOL} \
 		--topic=${TOPIC_BASIC_EXAMPLES}
 
-glue-producer:
+json-glue-producer:
 	docker-compose run --rm kafka-clients \
-		python examples/glue/glue-producer.py \
+		python examples/glue/json/glue-producer.py \
 		--host=${BROKER_ENDPOINTS} \
 		--security-protocol=${SECURITY_PROTOCOL} \
 		--topic=${TOPIC_GLUE_EXAMPLES} \
 		--registry-name=${GLUE_REGISTRY}
 
-glue-consumer:
+json-glue-consumer:
 	docker-compose run --rm kafka-clients \
-		python examples/glue/glue-consumer.py \
+		python examples/glue/json/glue-consumer.py \
 		--host=${BROKER_ENDPOINTS} \
 		--security-protocol=${SECURITY_PROTOCOL} \
 		--topic=${TOPIC_GLUE_EXAMPLES} \
 		--registry-name=${GLUE_REGISTRY}
+
+avro-glue-producer:
+	docker-compose run --rm kafka-clients \
+		python examples/glue/avro/glue-producer.py \
+		--host=${BROKER_ENDPOINTS} \
+		--security-protocol=${SECURITY_PROTOCOL} \
+		--topic=${AVRO_TOPIC_GLUE_EXAMPLES} \
+		--registry-name=${GLUE_REGISTRY}
+
 
 kafka-to-pg:
 	curl -X POST http://localhost:8083/connectors \

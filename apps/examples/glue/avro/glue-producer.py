@@ -1,6 +1,7 @@
 from aws_schema_registry import SchemaRegistryClient
-from aws_schema_registry.jsonschema import JsonSchema
 from aws_schema_registry.adapter.kafka import KafkaSerializer
+from aws_schema_registry.avro import AvroSchema
+
 from kafka import KafkaProducer
 import argparse
 import boto3
@@ -32,35 +33,44 @@ client = SchemaRegistryClient(
 )
 
 # Create the serializer
-serializer = KafkaSerializer(client)
+value_serializer = KafkaSerializer(client)
+key_serializer = KafkaSerializer(client, is_key=True)
+
+
+schema_key = None
+with open(f"{os.path.dirname(__file__)}/avroschema-key.json", 'r') as schema_file:
+    schema_key = AvroSchema(schema_file.read())
+
+
+schema_value = None
+with open(f"{os.path.dirname(__file__)}/avroschema-value.json", 'r') as schema_file:
+    schema_value = AvroSchema(schema_file.read())
 
 # Create the producer
 producer = KafkaProducer(
-    value_serializer=serializer,
+    value_serializer=value_serializer,
+    key_serializer=key_serializer,
     security_protocol=args.security_protocol,
     bootstrap_servers=args.host.split(",")
 )
 
-schema_value = None
-with open(f"{os.path.dirname(__file__)}/jsonschema-value.json", 'r') as schema_file:
-    schema_value = JsonSchema(schema_file.read())
 
-# Send message data along with schema
 
-data = {
-    'Scope': 'dev', 
-    'Version': 'v0', 
-    'Payload': {
-        'required_field': 'valor do required_field', 
-        'struct_field': {
-            'text_field': 'valor do text_field'
-        }
-    }, 
-    'Name': 'testevent'
-}
+for n in range(10):
+    # Send message data along with schema
+    data = {
+        'Scope': 'dev', 
+        'Version': 'v0', 
+        'Payload': {
+            'required_field': 'valor do required_field', 
+            'struct_field': {
+                'text_field': 'valor do text_field'
+            }
+        }, 
+        'Name': 'testevent'
+    }
 
-for _ in range(10):
     print("sending:", data)
-    producer.send(args.topic, value=(data, schema_value))
+    producer.send(args.topic, key=(f"key-{n}", schema_key), value=(data, schema_value))
 
 producer.flush()

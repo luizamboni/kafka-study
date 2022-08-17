@@ -1,0 +1,39 @@
+{
+  "namespace": "value",
+  "name": "value",
+  "type": "record",
+  "fields" : [
+    { 
+      "name" : "Scope", "type" : "string"
+    },
+    { 
+      "name" : "Version", "type" : "string"
+    },
+    { 
+      "name" : "Name", "type" : "string"
+    },
+    { 
+      "name" : "Payload", 
+      "type" : [
+        {
+          "name" : "Payload", 
+          "type" : "record" ,
+          "fields": [
+            { "name": "required_field", "type": "string" },
+            { "name": "struct_field", "type" : [
+                { 
+                  "namespace": "com.avro",
+                  "name": "StructuredField", 
+                  "type" : "record" ,
+                  "fields": [
+                    { "name":  "text_field",  "type": "string" }
+                  ]
+                }
+              ] 
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
