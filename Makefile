@@ -88,6 +88,13 @@ avro-glue-producer:
 		--topic=${AVRO_TOPIC_GLUE_EXAMPLES} \
 		--registry-name=${GLUE_REGISTRY}
 
+avro-glue-consumer:
+	docker-compose run --rm kafka-clients \
+		python examples/glue/avro/glue-consumer.py \
+		--host=${BROKER_ENDPOINTS} \
+		--security-protocol=${SECURITY_PROTOCOL} \
+		--topic=${AVRO_TOPIC_GLUE_EXAMPLES} \
+		--registry-name=${GLUE_REGISTRY}
 
 kafka-to-pg:
 	curl -X POST http://localhost:8083/connectors \

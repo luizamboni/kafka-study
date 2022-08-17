@@ -54,8 +54,6 @@ producer = KafkaProducer(
     bootstrap_servers=args.host.split(",")
 )
 
-
-
 for n in range(10):
     # Send message data along with schema
     data = {
