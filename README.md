@@ -33,6 +33,39 @@ where producers registry the schemas as Avro, JsonSchema, ProtoBuff and
 consumers loads it ones.
 SchemaRegistry works as http API and use kafka as your storage for schemas.
 
+### Schema Registry accepts three types of Schema
+#### Json
+
+### Avro
+
+### Protobuf
+Below an example of a simple message serialized.
+
+**schema**
+```
+{
+  string first_name = 1;
+  string last_name = 2;  
+}
+```
+
+**message**
+```
+{
+  first_name: "Arun",
+  last_name: "Kurian"
+}
+```
+
+**bytes**
+```
+124Arun226Kurian
+```
+
+In the case of `124Arun`, `1` stands for the field identifier, `2` for the data type (which is the string), and `4` is the length of the text.
+
+
+
 OBS: Confluent Schema Registry add a header in raw message this header its compose of 5 bytes prefixing the payload.
 
 |  0     |      1-4    |

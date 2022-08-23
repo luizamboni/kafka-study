@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+message Eventtest {
+  string Scope = 1;
+  string Version = 2;
+  string Name = 3;
+
+  message Payload {
+    string required_field = 1;
+    message struct_field {
+      string name = 1;
+    }
+  }
+}

@@ -85,7 +85,7 @@ avro-glue-producer:
 		python examples/glue/avro/glue-producer.py \
 		--host=${BROKER_ENDPOINTS} \
 		--security-protocol=${SECURITY_PROTOCOL} \
-		--topic=${AVRO_TOPIC_GLUE_EXAMPLES} \
+		--topic=${TOPIC_GLUE_AVRO_EXAMPLES} \
 		--registry-name=${GLUE_REGISTRY}
 
 avro-glue-consumer:
@@ -93,7 +93,7 @@ avro-glue-consumer:
 		python examples/glue/avro/glue-consumer.py \
 		--host=${BROKER_ENDPOINTS} \
 		--security-protocol=${SECURITY_PROTOCOL} \
-		--topic=${AVRO_TOPIC_GLUE_EXAMPLES} \
+		--topic=${TOPIC_GLUE_AVRO_EXAMPLES} \
 		--registry-name=${GLUE_REGISTRY}
 
 kafka-to-pg:
@@ -154,6 +154,22 @@ json-schema-consumer:
 		--topic=${TOPIC_GENERIC_JSON} \
 		--schema-registry=${CONFLUENT_REGISTRY}
 
+#root@12205e401437:/home/apps# 
+
+compile-protobuf-schema-producer:
+	docker-compose run \
+		--rm kafka-clients \
+		protoc -I=/home/apps/examples/protobuf/schemas/ --python_out=/home/apps/examples/protobuf/schemas/ /home/apps/examples/protobuf/schemas/value-schema.proto
+
+
+protobuf-schema-producer: compile-protobuf-schema-producer
+	docker-compose run \
+		--rm kafka-clients \
+		python examples/protobuf/protobuf-producer.py \
+		--host=${BROKER_ENDPOINTS} \
+		--security-protocol=${SECURITY_PROTOCOL} \
+		--topic=${TOPIC_GENERIC_PROTOBUF} \
+		--schema-registry=${CONFLUENT_REGISTRY} \
 
 s3-writer:
 	docker-compose run --rm kafka-clients \
