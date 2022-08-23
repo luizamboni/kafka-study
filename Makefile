@@ -169,7 +169,17 @@ protobuf-schema-producer: compile-protobuf-schema-producer
 		--host=${BROKER_ENDPOINTS} \
 		--security-protocol=${SECURITY_PROTOCOL} \
 		--topic=${TOPIC_GENERIC_PROTOBUF} \
-		--schema-registry=${CONFLUENT_REGISTRY} \
+		--schema-registry=${CONFLUENT_REGISTRY}
+
+# protubuf not need a schema regirstry to be deserialized
+protobuf-schema-consumer:
+	docker-compose run \
+		--rm kafka-clients \
+		python examples/protobuf/protobuf-consumer.py \
+		--host=${BROKER_ENDPOINTS} \
+		--security-protocol=${SECURITY_PROTOCOL} \
+		--topic=${TOPIC_GENERIC_PROTOBUF}
+
 
 s3-writer:
 	docker-compose run --rm kafka-clients \

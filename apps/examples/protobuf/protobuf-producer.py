@@ -4,7 +4,6 @@ from confluent_kafka.schema_registry import SchemaRegistryClient
 from confluent_kafka.schema_registry.protobuf import ProtobufSerializer
 import schemas.value_schema_pb2 as value_schema_pb2 
 import argparse
-import uuid
 
 def get_args():
   parser = argparse.ArgumentParser()
@@ -26,9 +25,8 @@ schema_registry_client = SchemaRegistryClient({
 protobuf_serializer = ProtobufSerializer(
   value_schema_pb2.Eventtest,
   schema_registry_client,
-  {'use.deprecated.format': True}
+  {'use.deprecated.format': False}
 )
-
 
 producer = SerializingProducer({
   'bootstrap.servers': args.host,
