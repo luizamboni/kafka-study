@@ -44,8 +44,10 @@ while True:
         if msg is None:
             continue
 
-        value = msg.value()
-        print(value)
+        event = msg.value()
+        print(event)
+        print("event: ", str(event.Payload))
+
     except KeyboardInterrupt:
         break
 

@@ -19,22 +19,22 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x12value-schema.proto\"z\n\tEventtest\x12\r\n\x05Scope\x18\x01 \x01(\t\x12\x0f\n\x07Version\x18\x02 \x01(\t\x12\x0c\n\x04Name\x18\x03 \x01(\t\x1a?\n\x07Payload\x12\x16\n\x0erequired_field\x18\x01 \x01(\t\x1a\x1c\n\x0cstruct_field\x12\x0c\n\x04name\x18\x01 \x01(\tb\x06proto3'
+  serialized_pb=b'\n\x12value-schema.proto\"\x1b\n\x0bStructField\x12\x0c\n\x04name\x18\x01 \x01(\t\"I\n\x0bPayloadType\x12\x16\n\x0erequired_field\x18\x01 \x01(\t\x12\"\n\x0cstruct_field\x18\x02 \x01(\x0b\x32\x0c.StructField\"X\n\tEventtest\x12\r\n\x05Scope\x18\x01 \x01(\t\x12\x0f\n\x07Version\x18\x02 \x01(\t\x12\x0c\n\x04Name\x18\x03 \x01(\t\x12\x1d\n\x07Payload\x18\x04 \x01(\x0b\x32\x0c.PayloadTypeb\x06proto3'
 )
 
 
 
 
-_EVENTTEST_PAYLOAD_STRUCT_FIELD = _descriptor.Descriptor(
-  name='struct_field',
-  full_name='Eventtest.Payload.struct_field',
+_STRUCTFIELD = _descriptor.Descriptor(
+  name='StructField',
+  full_name='StructField',
   filename=None,
   file=DESCRIPTOR,
   containing_type=None,
   create_key=_descriptor._internal_create_key,
   fields=[
     _descriptor.FieldDescriptor(
-      name='name', full_name='Eventtest.Payload.struct_field.name', index=0,
+      name='name', full_name='StructField.name', index=0,
       number=1, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
@@ -52,29 +52,37 @@ _EVENTTEST_PAYLOAD_STRUCT_FIELD = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=116,
-  serialized_end=144,
+  serialized_start=22,
+  serialized_end=49,
 )
 
-_EVENTTEST_PAYLOAD = _descriptor.Descriptor(
-  name='Payload',
-  full_name='Eventtest.Payload',
+
+_PAYLOADTYPE = _descriptor.Descriptor(
+  name='PayloadType',
+  full_name='PayloadType',
   filename=None,
   file=DESCRIPTOR,
   containing_type=None,
   create_key=_descriptor._internal_create_key,
   fields=[
     _descriptor.FieldDescriptor(
-      name='required_field', full_name='Eventtest.Payload.required_field', index=0,
+      name='required_field', full_name='PayloadType.required_field', index=0,
       number=1, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='struct_field', full_name='PayloadType.struct_field', index=1,
+      number=2, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
   ],
   extensions=[
   ],
-  nested_types=[_EVENTTEST_PAYLOAD_STRUCT_FIELD, ],
+  nested_types=[],
   enum_types=[
   ],
   serialized_options=None,
@@ -83,9 +91,10 @@ _EVENTTEST_PAYLOAD = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=81,
-  serialized_end=144,
+  serialized_start=51,
+  serialized_end=124,
 )
+
 
 _EVENTTEST = _descriptor.Descriptor(
   name='Eventtest',
@@ -116,10 +125,17 @@ _EVENTTEST = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='Payload', full_name='Eventtest.Payload', index=3,
+      number=4, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
   ],
   extensions=[
   ],
-  nested_types=[_EVENTTEST_PAYLOAD, ],
+  nested_types=[],
   enum_types=[
   ],
   serialized_options=None,
@@ -128,37 +144,37 @@ _EVENTTEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=22,
-  serialized_end=144,
+  serialized_start=126,
+  serialized_end=214,
 )
 
-_EVENTTEST_PAYLOAD_STRUCT_FIELD.containing_type = _EVENTTEST_PAYLOAD
-_EVENTTEST_PAYLOAD.containing_type = _EVENTTEST
+_PAYLOADTYPE.fields_by_name['struct_field'].message_type = _STRUCTFIELD
+_EVENTTEST.fields_by_name['Payload'].message_type = _PAYLOADTYPE
+DESCRIPTOR.message_types_by_name['StructField'] = _STRUCTFIELD
+DESCRIPTOR.message_types_by_name['PayloadType'] = _PAYLOADTYPE
 DESCRIPTOR.message_types_by_name['Eventtest'] = _EVENTTEST
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
+StructField = _reflection.GeneratedProtocolMessageType('StructField', (_message.Message,), {
+  'DESCRIPTOR' : _STRUCTFIELD,
+  '__module__' : 'value_schema_pb2'
+  # @@protoc_insertion_point(class_scope:StructField)
+  })
+_sym_db.RegisterMessage(StructField)
+
+PayloadType = _reflection.GeneratedProtocolMessageType('PayloadType', (_message.Message,), {
+  'DESCRIPTOR' : _PAYLOADTYPE,
+  '__module__' : 'value_schema_pb2'
+  # @@protoc_insertion_point(class_scope:PayloadType)
+  })
+_sym_db.RegisterMessage(PayloadType)
+
 Eventtest = _reflection.GeneratedProtocolMessageType('Eventtest', (_message.Message,), {
-
-  'Payload' : _reflection.GeneratedProtocolMessageType('Payload', (_message.Message,), {
-
-    'struct_field' : _reflection.GeneratedProtocolMessageType('struct_field', (_message.Message,), {
-      'DESCRIPTOR' : _EVENTTEST_PAYLOAD_STRUCT_FIELD,
-      '__module__' : 'value_schema_pb2'
-      # @@protoc_insertion_point(class_scope:Eventtest.Payload.struct_field)
-      })
-    ,
-    'DESCRIPTOR' : _EVENTTEST_PAYLOAD,
-    '__module__' : 'value_schema_pb2'
-    # @@protoc_insertion_point(class_scope:Eventtest.Payload)
-    })
-  ,
   'DESCRIPTOR' : _EVENTTEST,
   '__module__' : 'value_schema_pb2'
   # @@protoc_insertion_point(class_scope:Eventtest)
   })
 _sym_db.RegisterMessage(Eventtest)
-_sym_db.RegisterMessage(Eventtest.Payload)
-_sym_db.RegisterMessage(Eventtest.Payload.struct_field)
 
 
 # @@protoc_insertion_point(module_scope)
