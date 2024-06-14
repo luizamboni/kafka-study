@@ -23,8 +23,8 @@ services:
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_LISTENERS: INTERNAL://broker:9092,OUTSIDE://0.0.0.0:9094
-      KAFKA_ADVERTISED_LISTENERS: INTERNAL://broker:9092,OUTSIDE://${MACHINE_IP:-127.0.0.1}:9094
+      KAFKA_LISTENERS: INTERNAL://0.0.0.0:9092,OUTSIDE://0.0.0.0:9094
+      KAFKA_ADVERTISED_LISTENERS: INTERNAL://broker:9092,OUTSIDE://localhost:9094
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,OUTSIDE:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
       ALLOW_PLAINTEXT_LISTENER: 'yes'
@@ -57,7 +57,6 @@ services:
       AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
       AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
       AWS_DEFAULT_REGION: ${AWS_DEFAULT_REGION}
-      AWS_SESSION_TOKEN: ${AWS_SESSION_TOKEN}
     volumes:
       - ./apps/:/home/apps/
 
@@ -65,113 +64,35 @@ services:
     build: 
       context: ./connect
       dockerfile: Dockerfile
-    # image: confluentinc/cp-kafka-connect-base:7.0.1
     container_name: kafka-connect
     ports:
       - 8083:8083
     environment:
+      KAFKA_HEAP_OPTS: "-Xms512m -Xmx2g -XX:+UseContainerSupport -XX:MaxRAMPercentage=75.0"
       AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
       AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
       AWS_DEFAULT_REGION: ${AWS_DEFAULT_REGION}
-      CONNECT_BOOTSTRAP_SERVERS: ${BROKER_ENDPOINTS}
+      CONNECT_BOOTSTRAP_SERVERS: broker:9092
       CONNECT_REST_PORT: 8083
-      CONNECT_GROUP_ID: kafka-connect
-      CONNECT_CONFIG_STORAGE_TOPIC: _connect-configs
-      CONNECT_OFFSET_STORAGE_TOPIC: _connect-offsets
-      CONNECT_STATUS_STORAGE_TOPIC: _connect-status
+      CONNECT_GROUP_ID: "connect-cluster"
+      CONNECT_CONFIG_STORAGE_TOPIC: "connect-configs"
+      CONNECT_OFFSET_STORAGE_TOPIC: "connect-offsets"
+      CONNECT_STATUS_STORAGE_TOPIC: "connect-status"
+      CONNECT_CONFIG_STORAGE_REPLICATION_FACTOR: 1
+      CONNECT_OFFSET_STORAGE_REPLICATION_FACTOR: 1
+      CONNECT_STATUS_STORAGE_REPLICATION_FACTOR: 1
       CONNECT_KEY_CONVERTER: org.apache.kafka.connect.storage.StringConverter
       CONNECT_VALUE_CONVERTER: io.confluent.connect.avro.AvroConverter
-      CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL: ${CONFLUENT_REGISTRY}
-      CONNECT_REST_ADVERTISED_HOST_NAME: "kafka-connect"
-      CONNECT_LOG4J_APPENDER_STDOUT_LAYOUT_CONVERSIONPATTERN: "[%d] %p %X{connector.context}%m (%c:%L)%n"
-      CONNECT_CONFIG_STORAGE_REPLICATION_FACTOR: "-1"
-      CONNECT_OFFSET_STORAGE_REPLICATION_FACTOR: "-1"
-      CONNECT_STATUS_STORAGE_REPLICATION_FACTOR: "-1"
-    #  ---------------
-      # CONNECT_PLUGIN_PATH: /usr/share/confluent-hub-components,/usr/share/filestream-connectors,/data/connect-jars
-      CONNECT_PLUGIN_PATH: /usr/share/java,/usr/share/java/kafka,/usr/local/share/kafka/plugins,/usr/share/filestream-connectors,/data/connect-jars,/usr/share/confluent-hub-components
-
-    # If you want to use the Confluent Hub installer to d/l component, but make them available
-    # when running this offline, spin up the stack once and then run : 
-    #   docker cp kafka-connect:/usr/share/confluent-hub-components ./data/connect-jars
+      CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL: http://schema-registry:8081
+      CONNECT_INTERNAL_KEY_CONVERTER: org.apache.kafka.connect.json.JsonConverter
+      CONNECT_INTERNAL_VALUE_CONVERTER: org.apache.kafka.connect.json.JsonConverter
+      CONNECT_LOG4J_LOGGERS: "org.apache.kafka.connect.runtime.rest=WARN,org.reflections=ERROR"
+      CONNECT_PLUGIN_PATH: /usr/share/java,/usr/share/confluent-hub-components,/usr/share/aws
+      CONNECT_REST_ADVERTISED_HOST_NAME: kafka-connect
+      CONNECT_VALUE_CONVERTER_CONNECT_META_DATA: false
     volumes:
-      - $PWD/data:/data
-    # In the command section, $ are replaced with $$ to avoid the error 'Invalid interpolation format for "command" option'
-    command:
-      - bash
-      - -c
-      - |
-        # 
-        cat <<EOT >> distributed.properties
-        bootstrap.servers=${BROKER_ENDPOINTS}
-        plugin.path=/usr/share/java,/usr/share/java/kafka,/usr/local/share/kafka/plugins,/usr/share/filestream-connectors,/data/connect-jars,/usr/share/confluent-hub-components
-
-        value.converter=org.apache.kafka.connect.storage.StringConverter
-        key.converter=org.apache.kafka.connect.json.JsonConverter
-        group.id=abcd
-        offset.storage.topic=_connect-offsets
-        config.storage.topic=_connect-configs
-        status.storage.topic=_connect-status
-        
-        offset.storage.replication.factor=-1
-        config.storage.replication.factor=-1
-        status.storage.replication.factor=-1
-        tasks.max=1
-        EOT
-
-        cat <<EOT >> standalone.properties
-        bootstrap.servers=${BROKER_ENDPOINTS}
-        plugin.path=/usr/share/java,/usr/share/java/kafka,/usr/local/share/kafka/plugins,/usr/share/filestream-connectors,/data/connect-jars,/usr/share/confluent-hub-components
-
-        value.converter=org.apache.kafka.connect.storage.StringConverter
-        key.converter=org.apache.kafka.connect.json.JsonConverter
-        group.id=abcd
-        tasks.max=1
-        
-        offset.storage.file.filename=offset-file1
-        EOT
-
-        #
-        cat <<EOT >> connector.properties
-        name=${CONNECTOR_NAME}
-        connector.class=io.confluent.connect.s3.S3SinkConnector
-        tasks.max=1
-        topics=${TOPIC_GENERIC_JSON}
-        s3.region=us-east-1
-        s3.bucket.name=confluent-kafka-connect-s3-study
-        s3.part.size=5242880
-        flush.size=3
-
-        # transforms=SetSchema
-        # transforms.SetSchema.type=org.apache.kafka.connect.transforms.SetSchema
-        # transforms=SetSchema,SetSchemaMetadata
-
-
-        key.converter=org.apache.kafka.connect.storage.StringConverter
-
-        value.converter=io.confluent.connect.json.JsonSchemaConverter
-        value.converter.schema.registry.url=${CONFLUENT_REGISTRY}
-
-        storage.class=io.confluent.connect.s3.storage.S3Storage
-        format.class=io.confluent.connect.s3.format.parquet.ParquetFormat
-        schema.generator.class=io.confluent.connect.storage.hive.schema.DefaultSchemaGenerator
-        partitioner.class=io.confluent.connect.storage.partitioner.HourlyPartitioner
-        schema.compatibility=NONE
-        locale=pt_BR
-        timezone=UTC
-        timestamp.extractor=Record
-        EOT
-        #
-        echo "distributed.properties"
-        cat distributed.properties
-        echo "-------------------------"
-        echo "connector.properties"
-        cat connector.properties
-
-        echo "Launching Kafka Connect worker"
-        /bin/connect-distributed distributed.properties
-
-        # /bin/connect-standalone standalone.properties connector.properties
+      - ./data/connect:/data/connect
+    restart: unless-stopped
 
   pg:
     image: postgres:14.2
@@ -228,6 +149,6 @@ services:
           connections:
             docker-kafka-server:
               properties:
-                security.protocol: ${SECURITY_PROTOCOL}
-                bootstrap.servers: ${BROKER_ENDPOINTS}
+                security.protocol: PLAINTEXT
+                bootstrap.servers: broker:9092
     restart: unless-stopped

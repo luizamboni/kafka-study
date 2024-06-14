@@ -1,0 +1,22 @@
+up-ksql-example:
+	docker-compose up \
+		zookeeper kafka kafka-admin \
+		ksqldb-server ksqldb-cli
+
+
+faker-example:
+	docker-compose run --rm kafka-clients \
+		python examples/faker-example.py \
+		--host=${INTERNAL_BROKER_ENDPOINT} \
+		--registry=${CONFLUENT_REGISTRY} \
+		--topic=${TOPIC_GENERIC_AVRO}
+
+
+down-ksql-example:
+	docker-compose down \
+		 zookeeper kafka kafka-admin \
+		 ksqldb-server ksqldb-cli
+
+
+ksql-cli:
+	docker exec -it ksqldb-cli ksql http://ksqldb-server:8088

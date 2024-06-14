@@ -1,0 +1,32 @@
+TOPIC_GENERIC_AVRO=test_arvro_schema
+
+json-producer:
+	docker-compose run --rm kafka-clients \
+		python examples/json/json-producer.py \
+		--host=${INTERNAL_BROKER_ENDPOINT} \
+		--security-protocol=${SECURITY_PROTOCOL} \
+		--topic=test_json_schema_2 \
+		--schema-registry=${CONFLUENT_REGISTRY}
+
+json-consumer:
+	docker-compose run --rm kafka-clients \
+		python examples/json/json-consumer.py \
+		--host=${INTERNAL_BROKER_ENDPOINT} \
+		--security-protocol=${SECURITY_PROTOCOL} \
+		--topic=test_json_schema_2 \
+		--schema-registry=${CONFLUENT_REGISTRY}
+
+
+avro-consumer:
+	docker-compose run --rm kafka-clients \
+		python examples/avro/avro-consumer.py \
+		--host=${INTERNAL_BROKER_ENDPOINT} \
+		--registry=${CONFLUENT_REGISTRY} \
+		--topic=${TOPIC_GENERIC_AVRO}
+
+avro-producer:
+	docker-compose run --rm kafka-clients \
+		python examples/avro/avro-producer.py \
+		--host=${INTERNAL_BROKER_ENDPOINT} \
+		--registry=${CONFLUENT_REGISTRY} \
+		--topic=${TOPIC_GENERIC_AVRO}

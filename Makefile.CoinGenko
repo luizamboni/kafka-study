@@ -1,0 +1,14 @@
+setup:
+	docker-compose run --rm kafka-clients \
+		python setup.py \
+		--host=${INTERNAL_BROKER_ENDPOINT} \
+		--topic=coins
+	docker-compose run --rm kafka-clients \
+		python setup.py \
+		--host=${INTERNAL_BROKER_ENDPOINT} \
+		--topic=coins_history
+
+consumer:
+	docker-compose run --rm kafka-clients \
+	python examples/coin-gecko/coin-gecko-to-kafka.py \
+	--host=${INTERNAL_BROKER_ENDPOINT} \

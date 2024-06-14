@@ -1,0 +1,23 @@
+compile-protobuf-schema-producer:
+	docker-compose run \
+		--rm kafka-clients \
+		protoc -I=/home/apps/examples/protobuf/schemas/ --python_out=/home/apps/examples/protobuf/schemas/ /home/apps/examples/protobuf/schemas/value-schema.proto
+
+
+protobuf-schema-producer: compile-protobuf-schema-producer
+	docker-compose run \
+		--rm kafka-clients \
+		python examples/protobuf/protobuf-producer.py \
+		--host=${INTERNAL_BROKER_ENDPOINT} \
+		--security-protocol=${SECURITY_PROTOCOL} \
+		--topic=${TOPIC_GENERIC_PROTOBUF} \
+		--schema-registry=${CONFLUENT_REGISTRY}
+
+# protubuf not need a schema regirstry to be deserialized
+protobuf-schema-consumer:
+	docker-compose run \
+		--rm kafka-clients \
+		python examples/protobuf/protobuf-consumer.py \
+		--host=${INTERNAL_BROKER_ENDPOINT} \
+		--security-protocol=${SECURITY_PROTOCOL} \
+		--topic=${TOPIC_GENERIC_PROTOBUF}

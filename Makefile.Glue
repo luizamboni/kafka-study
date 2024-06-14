@@ -1,0 +1,37 @@
+include .env
+
+GLUE_REGISTRY_NAME=kafka-study
+TOPIC_GLUE_JSON_EXAMPLE=glue-registry-json-schema
+TOPIC_GLUE_AVRO_EXAMPLE=glue-registry-avro-schema
+
+json-glue-producer:
+	docker-compose run --rm kafka-clients \
+		python examples/glue/json/glue-producer.py \
+		--host=${INTERNAL_BROKER_ENDPOINT} \
+		--security-protocol=${SECURITY_PROTOCOL} \
+		--topic=${TOPIC_GLUE_JSON_EXAMPLE} \
+		--registry-name=${GLUE_REGISTRY_NAME}
+
+json-glue-consumer:
+	docker-compose run --rm kafka-clients \
+		python examples/glue/json/glue-consumer.py \
+		--host=${INTERNAL_BROKER_ENDPOINT} \
+		--security-protocol=${SECURITY_PROTOCOL} \
+		--topic=${TOPIC_GLUE_JSON_EXAMPLE} \
+		--registry-name=${GLUE_REGISTRY_NAME}
+
+avro-glue-producer:
+	docker-compose run --rm kafka-clients \
+		python examples/glue/avro/glue-producer.py \
+		--host=${INTERNAL_BROKER_ENDPOINT} \
+		--security-protocol=${SECURITY_PROTOCOL} \
+		--topic=${TOPIC_GLUE_AVRO_EXAMPLE} \
+		--registry-name=${GLUE_REGISTRY_NAME}
+
+avro-glue-consumer:
+	docker-compose run --rm kafka-clients \
+		python examples/glue/avro/glue-consumer.py \
+		--host=${INTERNAL_BROKER_ENDPOINT} \
+		--security-protocol=${SECURITY_PROTOCOL} \
+		--topic=${TOPIC_GLUE_AVRO_EXAMPLE} \
+		--registry-name=${GLUE_REGISTRY_NAME}

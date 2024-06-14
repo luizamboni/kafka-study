@@ -1,6 +1,11 @@
-FROM confluentinc/cp-kafka-connect-base:7.0.1
+FROM confluentinc/cp-kafka-connect-base:7.0.10.arm64
+# FROM confluentinc/cp-kafka-connect-base:7.0.10
 
 USER root
+
+ENV KAFKA_HEAP_OPTS="-Xms512m -Xmx2g"
+
+COPY /aws/ /usr/share/aws
 
 RUN confluent-hub install --no-prompt confluentinc/kafka-connect-s3:10.0.9
 RUN confluent-hub install --no-prompt confluentinc/kafka-connect-jdbc:10.3.3
