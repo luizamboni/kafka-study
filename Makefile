@@ -15,7 +15,7 @@ include Makefile.Protobuf
 include Makefile.Connect
 include Makefile.CoinGenko
 include Makefile.Ksql
-
+include infra/Makefile
 
 up:
 	docker-compose up zookeeper kafka schema-registry akhq connect

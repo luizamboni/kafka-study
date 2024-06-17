@@ -2,4 +2,4 @@ __pycache__
 .env
 .vscode
 .mypy_cache
-
+.DS_Store
