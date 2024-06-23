@@ -42,17 +42,17 @@ services:
       - kafka
       - zookeeper
     ports:
-      - "8081:8081"
+      - "8087:8087" #this is to avoid conflic with some kind of proxy on mac "nc -zv localhost 8081"
     environment:
       SCHEMA_REGISTRY_HOST_NAME: schema-registry
       SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: 'broker:9092'
-      SCHEMA_REGISTRY_LISTENERS: http://0.0.0.0:8081
+      SCHEMA_REGISTRY_LISTENERS: http://0.0.0.0:8081,http://0.0.0.0:8087
     restart: unless-stopped
 
   kafka-clients:
     build: 
       context: ./apps
-      dockerfile: Dockerfile  
+      dockerfile: Dockerfile
     environment:
       AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
       AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
