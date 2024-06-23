@@ -1,48 +1,47 @@
 
-list-connectors:
+connect-list-connectors:
 	curl -X GET http://localhost:8083/connectors
 
-delete-avro-to-pg:
+connect-delete-avro-to-pg:
 	curl -X POST http://localhost:8083/connectors/avro-to-pg
 
-kafka-avro-to-pg:
+connect-kafka-avro-to-pg:
 	curl -X POST http://localhost:8083/connectors \
 	-H 'Content-Type: application/json' \
 	-d @connect/sink/kafka-avro-to-pg-rows.json
 
 
-delete-kafka-avro-to-s3-parquet-glue:
+connect-delete-kafka-avro-to-s3-parquet-glue:
 	curl -X DELETE http://localhost:8083/connectors/kafka-avro-to-s3-parquet-glue
 
-kafka-avro-to-s3-parquet-glue:
+connect-kafka-avro-to-s3-parquet-glue:
 	curl -X POST http://localhost:8083/connectors \
 	-H 'Content-Type: application/json' \
 	-d @connect/sink/kafka-avro-to-s3-parquet-glue.json
 
-delete-kafka-avro-to-s3-parquet:
+connect-delete-kafka-avro-to-s3-parquet:
 	curl -X DELETE http://localhost:8083/connectors/kafka-avro-to-s3-parquet
 
-kafka-avro-to-s3-parquet:
+connect-kafka-avro-to-s3-parquet:
 	curl -X POST http://localhost:8083/connectors \
 	-H 'Content-Type: application/json' \
 	-d @connect/sink/kafka-avro-to-s3-parquet.json
 
 
-delete-kafka-json-to-s3-parquet:
+connect-delete-kafka-json-to-s3-parquet:
 	curl -X DELETE http://localhost:8083/connectors/kafka-json-to-s3-parquet
 
-kafka-json-to-s3-parquet:
+connect-kafka-json-to-s3-parquet:
 	curl -X POST http://localhost:8083/connectors \
 	-H 'Content-Type: application/json' \
 	-d @connect/sink/kafka-json-to-s3-parquet.json
 
-connect:
+connect-connect:
 	docker-compose run --rm connect \
 		-e CONNECTOR_NAME=test \
 		-e TOPIC=TOPIC_GENERIC_JSON
 
-
-check-pg:
+connect-check-pg:
 	docker-compose exec pg \
 		psql -U pg-example \
 		-c 'SELECT * FROM ${TOPIC_GENERIC_AVRO}'
