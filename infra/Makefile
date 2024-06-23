@@ -37,6 +37,11 @@ terraform-deploy-vpn-endpoint:
 	apply --auto-approve \
 	--target=module.vpn_endpoint
 
+terraform-deploy-get-vpn-config: terraform-init
+	${TERRAFORM_BASE} \
+	apply --auto-approve \
+	--target=null_resource.get_vpn_endpoint_config
+
 terraform-deploy-msk: 
 	${TERRAFORM_BASE} \
 	apply --auto-approve \
@@ -50,3 +55,4 @@ terraform-deploy:
 terraform-destroy: terraform-init
 	${TERRAFORM_BASE} \
 	destroy --auto-approve
+
