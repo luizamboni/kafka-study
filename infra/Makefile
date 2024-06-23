@@ -10,6 +10,9 @@ TERRAFORM_BASE=docker run --rm -it --name terraform \
 	-e AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} \
 	hashicorp/terraform:${TERRAFORM_VERSION}
 
+terraform-generate-certs:
+	cd infra/terraform/keys && ./generate.sh
+
 terraform-init:
 	${TERRAFORM_BASE} \
 	init
