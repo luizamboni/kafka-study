@@ -1,0 +1,7 @@
+
+schema-registry-list-schemas:
+	curl http://localhost:8087/schemas/ | jq "."
+
+
+schema-registry-list-subjects:
+	curl http://localhost:8087/subjects/ | jq "."

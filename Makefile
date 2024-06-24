@@ -15,6 +15,7 @@ include Makefile.Protobuf
 include Makefile.Connect
 include Makefile.CoinGenko
 include Makefile.Ksql
+include Makefile.SchemaRegistry
 include infra/Makefile
 
 up:
