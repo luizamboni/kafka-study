@@ -21,12 +21,12 @@ terraform-plan: terraform-init
 	${TERRAFORM_BASE} \
 	plan
 
-terraform-deploy: terraform-init
+terraform-create-all: terraform-init
 	${TERRAFORM_BASE} \
 	apply --auto-approve
 
 
-terraform-deploy-network: 
+terraform-create-network: 
 	${TERRAFORM_BASE} \
 	apply --auto-approve \
 	--target=aws_vpc.vpc \
@@ -35,27 +35,33 @@ terraform-deploy-network:
 	--target=aws_subnet.subnet_az3 \
 	--target=aws_security_group.sg
 
-terraform-deploy-vpn-endpoint: 
+terraform-create-vpn-endpoint: 
 	${TERRAFORM_BASE} \
 	apply --auto-approve \
 	--target=module.vpn_endpoint
 
-terraform-deploy-get-vpn-config: terraform-init
+terraform-create-get-vpn-config: terraform-init
 	${TERRAFORM_BASE} \
 	apply --auto-approve \
 	--target=null_resource.get_vpn_endpoint_config
 
-terraform-deploy-msk: 
+terraform-create-data-crawlers: terraform-init
 	${TERRAFORM_BASE} \
 	apply --auto-approve \
-	--target=module.msk_instance
+	--target=aws_glue_crawler.root
 
-terraform-deploy:
+terraform-create-data-crawlers: terraform-init
+	${TERRAFORM_BASE} \
+	destroy --auto-approve \
+	--target=aws_glue_crawler.root
+
+terraform-create-msk: 
 	${TERRAFORM_BASE} \
 	apply --auto-approve \
-	--target=s3_connect-avro-to-parquet-example
+	--target=module.msk_instance \
+	--target=module.s3_connect-avro-to-parquet-example
 
-terraform-destroy: terraform-init
+terraform-destroy-all: terraform-init
 	${TERRAFORM_BASE} \
 	destroy --auto-approve
 

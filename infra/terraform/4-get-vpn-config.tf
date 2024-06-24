@@ -7,6 +7,7 @@ resource "null_resource" "install_awscli" {
     always_run = "${timestamp()}"
   }
 }
+
 resource "null_resource" "get_vpn_endpoint_config" {
   provisioner "local-exec" {
 
