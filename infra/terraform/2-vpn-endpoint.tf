@@ -12,8 +12,8 @@ module "vpn_endpoint" {
   ]
   cert_server_key = "${path.module}/keys/certs/server.key"
   cert_server_ctr = "${path.module}/keys/certs/server.crt"
-  cert_client_key = "${path.module}/keys/certs/zamboni.4development.net.key"
-  cert_client_ctr = "${path.module}/keys/certs/zamboni.4development.net.crt"
+  cert_client_key = "${path.module}/keys/certs/client.key"
+  cert_client_ctr = "${path.module}/keys/certs/client.crt"
   cert_ca         = "${path.module}/keys/certs/ca.crt"
 
   tags = merge({}, local.tags)
