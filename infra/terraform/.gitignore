@@ -4,3 +4,4 @@ terraform.tfstate
 terraform.tfstate*
 certs
 .DS_Store
+*.ovpn

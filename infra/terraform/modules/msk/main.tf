@@ -22,7 +22,7 @@ PROPERTIES
 resource "aws_msk_cluster" "example" {
   cluster_name           = var.name
   kafka_version          = "3.2.0"
-  number_of_broker_nodes = 3
+  number_of_broker_nodes = length(var.subnet_ids)
 
   broker_node_group_info {
     instance_type = "kafka.t3.small"
@@ -53,6 +53,12 @@ resource "aws_msk_cluster" "example" {
         log_group = aws_cloudwatch_log_group.test.name
       }
     }
+  }
+
+  timeouts {
+    create = "60m"
+    update = "2h"
+    delete = "30m"
   }
 
   tags = merge({}, var.tags)

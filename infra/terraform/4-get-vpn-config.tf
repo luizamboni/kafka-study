@@ -14,13 +14,13 @@ resource "null_resource" "get_vpn_endpoint_config" {
     command = <<EOT
     aws ec2 export-client-vpn-client-configuration \
     --client-vpn-endpoint-id ${module.vpn_endpoint.id} \
-    --output text > /workspace/keys/endpoint-config.opvn && \
-    echo "<cert>" >> /workspace/keys/msk-example.opvn && \
-    cat /workspace/keys/certs/client.crt >> /workspace/keys/msk-example.opvn && \
-    echo "</cert>" >> /workspace/keys/msk-example.opvn && \
-    echo "<key>" >> /workspace/keys/msk-example.opvn && \
-    cat /workspace/keys/certs/client.key >> /workspace/keys/msk-example.opvn && \
-    echo "</key>" >> /workspace/keys/msk-example.opvn
+    --output text > /workspace/keys/vpn-config.ovpn && \
+    echo "<cert>" >> /workspace/keys/vpn-config.ovpn && \
+    cat /workspace/keys/certs/client.crt >> /workspace/keys/vpn-config.ovpn && \
+    echo "</cert>" >> /workspace/keys/vpn-config.ovpn && \
+    echo "<key>" >> /workspace/keys/vpn-config.ovpn && \
+    cat /workspace/keys/certs/client.key >> /workspace/keys/vpn-config.ovpn && \
+    echo "</key>" >> /workspace/keys/vpn-config.ovpn
     EOT
     interpreter = ["/bin/bash", "-c"]
   }

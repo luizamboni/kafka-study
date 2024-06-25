@@ -6,13 +6,9 @@ module msk_instance {
     experiment = "Connect"
   }
 
-  security_group_id = aws_security_group.sg.id
-  subnet_ids = [
-    aws_subnet.subnet_az1.id,
-    aws_subnet.subnet_az2.id,
-    aws_subnet.subnet_az3.id,
-  ]
-  vpc_id = aws_vpc.vpc.id
+  security_group_id = module.network.sg_id
+  subnet_ids = module.network.subnet_ids
+  vpc_id = module.network.vpc_id
 }
 
 resource "aws_s3_bucket" "bucket" {
@@ -30,13 +26,9 @@ module "s3_connect_plugin" {
 module "s3_connect-avro-to-parquet-example" {
   source = "./modules/s3_connector"
   name = "test-connector"
-  subnet_ids = [
-    aws_subnet.subnet_az1.id,
-    aws_subnet.subnet_az2.id,
-    aws_subnet.subnet_az3.id,
-  ]
+  subnet_ids = module.network.subnet_ids
 
-  security_group_id = aws_security_group.sg.id
+  security_group_id = module.network.sg_id
 
   topics = "glue-registry-avro-schema"
   bucket_name = local.data_bucket_name

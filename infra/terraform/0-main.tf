@@ -28,12 +28,26 @@ locals {
   }
 
   vpc_cidr = "192.168.0.0/22"
-  subnet_cidrs = [ 
-    "192.168.0.0/24", 
-    "192.168.1.0/24", 
-    "192.168.2.0/24" 
+
+  subnet_config = [
+    { cidr = "192.168.0.0/24", az = "us-east-1a" },
+    { cidr = "192.168.1.0/24", az = "us-east-1b" },
+    # { cidr = "192.168.2.0/24", az = "us-east-1c" }
   ]
+  
   vpn_client_cidr = "10.1.0.0/16"
+
+  # GPT suggest to me to avoid conflicts in my machine due
+  ## my ifconfig output
+  # vpc_cidr = "10.0.0.0/16"
+
+  # # Updated subnet configurations to avoid conflict
+  # subnet_config = [
+  #   { cidr = "10.0.1.0/24", az = "us-east-1a" },
+  #   { cidr = "10.0.2.0/24", az = "us-east-1b" },
+  #   # { cidr = "10.0.3.0/24", az = "us-east-1c" }
+  # ]
+  # vpn_client_cidr = "10.1.0.0/16"
 }
 
 

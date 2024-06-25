@@ -21,19 +21,14 @@ terraform-plan: terraform-init
 	${TERRAFORM_BASE} \
 	plan
 
-terraform-create-all: terraform-init
-	${TERRAFORM_BASE} \
-	apply --auto-approve
+terraform-create-all: terraform-init terraform-create-network terraform-create-vpn-endpoint terraform-create-get-vpn-config terraform-create-msk
+	echo "All created"
 
 
 terraform-create-network: 
 	${TERRAFORM_BASE} \
 	apply --auto-approve \
-	--target=aws_vpc.vpc \
-	--target=aws_subnet.subnet_az1 \
-	--target=aws_subnet.subnet_az2 \
-	--target=aws_subnet.subnet_az3 \
-	--target=aws_security_group.sg
+	--target=module.network
 
 terraform-create-vpn-endpoint: 
 	${TERRAFORM_BASE} \

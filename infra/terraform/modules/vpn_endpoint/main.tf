@@ -56,6 +56,11 @@ resource "aws_ec2_client_vpn_network_association" "vpn_subnets" {
   lifecycle {
     ignore_changes = [subnet_id]
   }
+
+  timeouts {
+    create = "30m"
+    delete = "40m"
+  }
 }
 
 data "aws_subnet" "selected" {
