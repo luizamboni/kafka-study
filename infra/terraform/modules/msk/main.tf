@@ -35,6 +35,11 @@ resource "aws_msk_cluster" "example" {
     security_groups = [var.security_group_id]
   }
 
+  configuration_info {
+    arn = aws_msk_configuration.example.id
+    revision = aws_msk_configuration.example.latest_revision
+  } 
+
   encryption_info {
     encryption_at_rest_kms_key_arn = aws_kms_key.kms.arn
   }

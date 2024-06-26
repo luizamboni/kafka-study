@@ -21,7 +21,7 @@ terraform-plan: terraform-init
 	${TERRAFORM_BASE} \
 	plan
 
-terraform-create-all: terraform-init terraform-create-network terraform-create-vpn-endpoint terraform-create-get-vpn-config terraform-create-msk
+terraform-create-all: terraform-init terraform-create-network terraform-create-vpn-endpoint terraform-create-msk
 	echo "All created"
 
 
@@ -33,7 +33,8 @@ terraform-create-network:
 terraform-create-vpn-endpoint: 
 	${TERRAFORM_BASE} \
 	apply --auto-approve \
-	--target=module.vpn_endpoint
+	--target=module.vpn_endpoint \
+	--target=null_resource.get_vpn_endpoint_config
 
 terraform-create-get-vpn-config: terraform-init
 	${TERRAFORM_BASE} \
@@ -55,6 +56,12 @@ terraform-create-msk:
 	apply --auto-approve \
 	--target=module.msk_instance \
 	--target=module.s3_connect-avro-to-parquet-example
+
+
+terraform-create-ec2-test-instances:
+	${TERRAFORM_BASE} \
+	apply --auto-approve \
+	--target=module.ec2_test_instances
 
 terraform-destroy-all: terraform-init
 	${TERRAFORM_BASE} \

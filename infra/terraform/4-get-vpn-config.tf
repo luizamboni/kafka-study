@@ -30,6 +30,7 @@ resource "null_resource" "get_vpn_endpoint_config" {
   }
 
   depends_on = [
-    null_resource.install_awscli
+    null_resource.install_awscli,
+    module.vpn_endpoint,
   ]
 }
