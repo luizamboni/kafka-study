@@ -16,3 +16,7 @@ variable subnet_config {
         az   = string
     }))
 }
+
+variable region {
+    type = string
+}
