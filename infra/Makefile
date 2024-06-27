@@ -57,6 +57,16 @@ terraform-create-msk:
 	--target=module.msk_instance \
 	--target=module.s3_connect-avro-to-parquet-example
 
+terraform-create-msk-connect: 
+	${TERRAFORM_BASE} \
+	apply --auto-approve \
+	--target=module.s3_connect-avro-to-parquet-example
+
+
+terraform-destroy-msk-connect: 
+	${TERRAFORM_BASE} \
+	destroy --auto-approve \
+	--target=module.s3_connect-avro-to-parquet-example
 
 terraform-create-ec2-test-instances:
 	${TERRAFORM_BASE} \
