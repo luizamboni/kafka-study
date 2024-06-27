@@ -116,4 +116,11 @@ resource "aws_mskconnect_connector" "example" {
         }
     }
     service_execution_role_arn = aws_iam_role.msk_connect_role.arn
+
+
+    timeouts {
+      create = "60m"
+      update = "2h"
+      delete = "30m"
+    }
 }
