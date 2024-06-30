@@ -1,6 +1,9 @@
 # Network
 resource "aws_vpc" "vpc" {
   cidr_block = var.vpc_cidr
+  enable_dns_support = true
+  enable_dns_hostnames = true
+
   tags = merge({},
     var.tags
   )
@@ -61,5 +64,23 @@ resource "aws_vpc_endpoint" "s3" {
 
   tags = {
     Name = "s3-endpoint"
+  }
+}
+
+resource "aws_vpc_endpoint" "glue" {
+  vpc_id             = aws_vpc.vpc.id
+  service_name       = "com.amazonaws.${var.region}.glue"  # Replace with your AWS region
+  vpc_endpoint_type  = "Interface"
+
+  security_group_ids = [
+    aws_security_group.sg.id,
+  ]
+
+  subnet_ids = [for subnet in aws_subnet.subnet : subnet.id]
+
+  private_dns_enabled = true
+
+  tags = {
+    Name = "glue-endpoint"
   }
 }
