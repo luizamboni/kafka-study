@@ -54,9 +54,10 @@ producer = KafkaProducer(
     bootstrap_servers=args.host.split(",")
 )
 
-for n in range(10):
+for n in range(10_000):
     # Send message data along with schema
     data = {
+        'Name': 'testevent',
         'Scope': 'dev', 
         'Version': 'v0', 
         'Payload': {
@@ -65,7 +66,6 @@ for n in range(10):
                 'text_field': 'valor do text_field'
             }
         }, 
-        'Name': 'testevent'
     }
 
     print("sending:", data)
