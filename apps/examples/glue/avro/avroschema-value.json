@@ -1,6 +1,6 @@
 {
   "namespace": "value",
-  "name": "value",
+  "name": "ValueRecord",
   "type": "record",
   "fields" : [
     { 
@@ -14,26 +14,23 @@
     },
     { 
       "name" : "Payload", 
-      "type" : [
-        {
-          "name" : "Payload", 
-          "type" : "record" ,
-          "fields": [
-            { "name": "required_field", "type": "string" },
-            { "name": "struct_field", "type" : [
-                { 
-                  "namespace": "com.avro",
-                  "name": "StructuredField", 
-                  "type" : "record" ,
-                  "fields": [
-                    { "name":  "text_field",  "type": "string" }
-                  ]
-                }
-              ] 
+      "type" : {
+        "name" : "PayloadRecord", 
+        "type" : "record",
+        "fields": [
+          { "name": "required_field", "type": "string" },
+          { 
+            "name": "struct_field", 
+            "type" : {
+              "name": "StructuredField", 
+              "type" : "record",
+              "fields": [
+                { "name":  "text_field",  "type": "string" }
+              ]
             }
-          ]
-        }
-      ]
+          }
+        ]
+      }
     }
   ]
 }
