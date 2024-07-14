@@ -25,17 +25,21 @@ module "s3_connect_plugin" {
 
 module "s3_connect-avro-to-parquet-example" {
   source = "./modules/s3_connector"
-  name = "test-connector"
+  for_each = { for idx, cfg in local.sink_configs : idx => cfg }
+
+  name = "${each.value.topic}-${each.key}"
   subnet_ids = module.network.subnet_ids
 
   security_group_id = module.network.sg_id
 
-  topics = "glue-registry-avro-schema"
+  topics              = each.value.topic
+
   bucket_name = local.data_bucket_name
   region = local.region
-  register_name = "kafka-study"
-  key_schema_name = "glue-registry-avro-schema-key"
-  value_schema_name = "glue-registry-avro-schema-value"
+  register_name = each.value.register_name
+
+  key_schema_name     = "${each.value.topic}-key"
+  value_schema_name   = "${each.value.topic}-value"
 
   bootstrap_brokers_tls = module.msk_instance.bootstrap_brokers_tls
 

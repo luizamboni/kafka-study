@@ -3,9 +3,14 @@ resource "null_resource" "install_awscli" {
     command     = "apk add --no-cache bash py-pip jq aws-cli"
     interpreter = ["/bin/sh", "-c"]
   }
+
   triggers = {
     always_run = "${timestamp()}"
   }
+
+  depends_on = [
+    module.vpn_endpoint,
+  ]
 }
 
 resource "null_resource" "get_vpn_endpoint_config" {

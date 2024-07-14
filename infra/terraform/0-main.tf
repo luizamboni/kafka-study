@@ -21,6 +21,17 @@ locals {
 
   data_bucket_name = "confluent-kafka-connect-s3-study"
   database_name = "kafka_study"
+  register_name = "kafka-study"
+
+
+  sink_configs = [
+    {
+      topic = "glue-registry-avro-schema"
+      register_name = local.register_name
+      key_schema_name = "glue-registry-avro-schema-key" # the formula is "${topic}-{key}"
+      value_schema_name = "glue-registry-avro-schema-value" # the formula is "${topic}-{value}"
+    }
+  ]
 
   tags = {
     Project = local.project

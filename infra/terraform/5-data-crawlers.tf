@@ -89,44 +89,31 @@ resource "aws_glue_catalog_database" "database" {
 }
 
 resource "aws_glue_crawler" "root" {
+    for_each = { for idx, cfg in local.sink_configs : idx => cfg }
+
     database_name = aws_glue_catalog_database.database.name
-    name          = local.name
+    name          = "${aws_glue_catalog_database.database.name}-${each.value.topic}"
     role          = aws_iam_role.default.arn
+
+    schedule      = "cron(0 * * * ? *)"
+
 
     configuration = jsonencode(
         {
-        Grouping = {
-            TableGroupingPolicy = "CombineCompatibleSchemas"
-        }
-        CrawlerOutput = {
-            Partitions = { AddOrUpdateBehavior = "InheritFromTable" }
-        }
+            Grouping = {
+                TableGroupingPolicy = "CombineCompatibleSchemas"
+            }
+            CrawlerOutput = {
+                Partitions = { 
+                    AddOrUpdateBehavior = "InheritFromTable" 
+                }
+            }
             Version = 1
         }
     )
 
     s3_target {
-        path = "s3://${local.data_bucket_name}/topics/user_login-v1/"
+        path        = "s3://${local.data_bucket_name}/topics/${each.value.topic}/"
         sample_size = 5
     }
-
-    s3_target {
-        path = "s3://${local.data_bucket_name}/topics/user_login-v2/"
-        sample_size = 5
-    }
-
-    s3_target {
-        path = "s3://${local.data_bucket_name}/topics/user_login-v3/"
-        sample_size = 5
-    }
-
-
-    # catalog_target {
-    #     database_name = aws_glue_catalog_database.database.name
-    #     tables        = [
-    #         "user_login-v1",
-    #         "user_login-v2",
-    #         "user_login-v3",
-    #     ]
-    # }
 }
