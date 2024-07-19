@@ -1,0 +1,23 @@
+
+event-receiver-docker-build:
+	docker build -f ./event-receiver/Dockerfile -t event-receiver ./event-receiver
+
+
+event-receiver-docker-run:
+	docker run \
+		-e AWS_REGION=${AWS_REGION} \
+		-e GLUE_SCHEMA_REGISTRY_NAME=${GLUE_REGISTRY_NAME} \
+		-e KAFKA_BOOTSTRAP_URL=${INTERNAL_BROKER_ENDPOINT} \
+		-e SECURITY_PROTOCOL=${SECURITY_PROTOCOL} \
+	 	-e AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} \
+      	-e AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} \
+      	-e AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION} \
+		-e SCHEMA_REGISTRY_TYPE=GLUE \
+		-p 5000:5000 \
+		event-receiver
+
+
+event-receiver-send-events:
+	docker run --network host \
+		event-receiver \
+		python client.py
