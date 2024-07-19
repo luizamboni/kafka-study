@@ -1,0 +1,7 @@
+{
+    "type": "record", 
+    "name": "com.example.User1", 
+    "fields": [
+        {"name": "name", "type": "string"}
+    ]
+}

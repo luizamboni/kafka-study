@@ -1,0 +1,10 @@
+{
+    "type": "record", 
+    "name": "com.example.User2", 
+    "fields": [
+        {"name": "name", "type": "string"},
+        {"name": "age", "type": {"type": "int"}}
+    ]
+}
+
+

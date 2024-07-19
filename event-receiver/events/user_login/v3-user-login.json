@@ -1,0 +1,9 @@
+{
+    "type": "record", 
+    "name": "com.example.User3", 
+    "fields": [
+        {"name": "name", "type": "string"},
+        {"name": "age", "type": {"type": "int"}}, 
+        {"name": "birth_date", "type": {"logicalType": "date", "type": "int"}}
+    ]
+}
