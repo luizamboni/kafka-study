@@ -1,13 +1,11 @@
-[
-  {
-    "namespace": "my.test",
-    "name": "key",
-    "type": "record",
-    "fields" : [
-      { 
-        "name" : "id", "type" : "string"
-      }
-    ]
-  }
-]
+{
+  "namespace": "my.test",
+  "name": "key",
+  "type": "record",
+  "fields" : [
+    { 
+      "name" : "id", "type" : "string"
+    }
+  ]
+}
 
