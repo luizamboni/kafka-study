@@ -1,5 +1,5 @@
 resource "aws_iam_role" "msk_connect_role" {
-  name = "MSKConnectRole"
+  name = "MSKConnectRole-${var.name}"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -16,7 +16,7 @@ resource "aws_iam_role" "msk_connect_role" {
 }
 
 resource "aws_iam_policy" "msk_connect_policy" {
-  name        = "MSKConnectPolicy"
+  name        = "MSKConnectPolicy-${var.name}"
   description = "Policy for MSK Connect to access MSK and S3"
 
   policy = jsonencode({

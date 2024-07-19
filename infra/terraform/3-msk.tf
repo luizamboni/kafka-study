@@ -27,7 +27,7 @@ module "s3_connect-avro-to-parquet-example" {
   source = "./modules/s3_connector"
   for_each = { for idx, cfg in local.sink_configs : idx => cfg }
 
-  name = "${each.value.topic}-${each.key}"
+  name = replace("${each.value.topic}", "_", "-")
   subnet_ids = module.network.subnet_ids
 
   security_group_id = module.network.sg_id
@@ -38,8 +38,8 @@ module "s3_connect-avro-to-parquet-example" {
   region = local.region
   register_name = each.value.register_name
 
-  key_schema_name     = "${each.value.topic}-key"
-  value_schema_name   = "${each.value.topic}-value"
+  key_schema_name = lookup(each.value, "key_schema_name", "${each.value.topic}-key")
+  value_schema_name = lookup(each.value, "value_schema_name", "${each.value.topic}-value")
 
   bootstrap_brokers_tls = module.msk_instance.bootstrap_brokers_tls
 

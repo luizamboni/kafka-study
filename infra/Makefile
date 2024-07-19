@@ -21,7 +21,7 @@ terraform-plan: terraform-init
 	${TERRAFORM_BASE} \
 	plan
 
-terraform-create-all: terraform-init terraform-create-network terraform-create-vpn-endpoint terraform-create-msk
+terraform-create-all: terraform-init terraform-create-network terraform-create-vpn-endpoint terraform-create-msk terraform-create-data-crawlers terraform-write-outputs
 	echo "All created"
 
 
@@ -48,7 +48,7 @@ terraform-create-data-crawlers: terraform-init
 
 terraform-create-data-crawlers: terraform-init
 	${TERRAFORM_BASE} \
-	destroy --auto-approve \
+	apply --auto-approve \
 	--target=aws_glue_crawler.root
 
 terraform-create-msk: 
@@ -77,3 +77,8 @@ terraform-destroy-all: terraform-init
 	${TERRAFORM_BASE} \
 	destroy --auto-approve
 
+terraform-write-outputs:
+	${TERRAFORM_BASE} \
+		apply --auto-approve \
+		--target=null_resource.write_outputs_to_file
+	mv infra/terraform/cloud.env cloud.env
