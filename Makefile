@@ -9,6 +9,7 @@ CONFLUENT_REGISTRY=http://schema-registry:8081
 GLUE_REGISTRY=kafka-study
 
 include .env
+-include .env.cloud
 include Makefile.Confluent
 include Makefile.Glue
 include Makefile.Protobuf
@@ -19,6 +20,9 @@ include Makefile.SchemaRegistry
 include infra/Makefile
 include Makefile.EventReceiver
 
+
+test_load_vars:
+	echo ${INTERNAL_BROKER_ENDPOINT}
 
 up:
 	docker-compose up zookeeper kafka schema-registry akhq connect

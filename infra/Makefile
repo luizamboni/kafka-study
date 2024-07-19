@@ -81,4 +81,4 @@ terraform-write-outputs:
 	${TERRAFORM_BASE} \
 		apply --auto-approve \
 		--target=null_resource.write_outputs_to_file
-	mv infra/terraform/cloud.env cloud.env
+	mv infra/terraform/env.cloud env.cloud
