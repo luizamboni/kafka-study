@@ -36,7 +36,7 @@ module "s3_connect-avro-to-parquet-example" {
 
   bucket_name = local.data_bucket_name
   region = local.region
-  register_name = each.value.register_name
+  register_name = each.value.registry_name
 
   key_schema_name = lookup(each.value, "key_schema_name", "${each.value.topic}-key")
   value_schema_name = lookup(each.value, "value_schema_name", "${each.value.topic}-value")
@@ -45,4 +45,10 @@ module "s3_connect-avro-to-parquet-example" {
 
   custom_plugin_arn = module.s3_connect_plugin.plugin_arn
   custom_plugin_revision = module.s3_connect_plugin.plugin_latest_revision
+}
+
+# Registry
+resource "aws_glue_registry" "example" {
+  registry_name = local.registry_name
+  tags = local.tags
 }

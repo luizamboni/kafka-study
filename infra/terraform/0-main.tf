@@ -14,36 +14,33 @@ provider "aws" {
   region = "us-east-1"
 }
 
+data "aws_caller_identity" "current" {}
+
 locals {
-  project = "msk-example"
-  name = "msk-example"
+  account_id = data.aws_caller_identity.current.account_id
+
+  project = "seed infra"
+  name = "seed"
   region = "us-east-1"
 
-  data_bucket_name = "confluent-kafka-connect-s3-study"
-  database_name = "kafka_study"
-  register_name = "kafka-study"
   
-  # justo here to get easely in output file
-  glyue_avro_example_topic = "glue-registry-avro-schema"
+  database_name = local.name
+  registry_name = local.name
+  data_bucket_name = "glue-database-${local.name}.${local.account_id}.${local.region}.${local.database_name}"
+
 
   sink_configs = [
     {
-      topic = local.glyue_avro_example_topic
-      register_name = local.register_name
-      # key_schema_name = "glue-registry-avro-schema-key" # the formula is "${topic}-{key}"
-      # value_schema_name = "glue-registry-avro-schema-value" # the formula is "${topic}-{value}"
-    },
-    {
       topic = "user_login-v1"
-      register_name = local.register_name
+      registry_name = local.registry_name
     },
     {
       topic = "user_login-v2"
-      register_name = local.register_name
+      registry_name = local.registry_name
     },
     {
       topic = "user_login-v3"
-      register_name = local.register_name
+      registry_name = local.registry_name
     },
   ]
 

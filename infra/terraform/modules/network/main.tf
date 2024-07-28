@@ -84,3 +84,31 @@ resource "aws_vpc_endpoint" "glue" {
     Name = "glue-endpoint"
   }
 }
+
+resource "aws_vpc_endpoint" "ecr_api" {
+  vpc_id            = aws_vpc.vpc.id
+  service_name      = "com.amazonaws.${var.region}.ecr.api"
+  vpc_endpoint_type = "Interface"
+
+  subnet_ids = [for subnet in aws_subnet.subnet : subnet.id]
+  security_group_ids = [aws_security_group.sg.id]
+  private_dns_enabled = true
+
+  tags = {
+    Name = "ecr-api-endpoint"
+  }
+}
+
+resource "aws_vpc_endpoint" "ecr_dkr" {
+  vpc_id            = aws_vpc.vpc.id
+  service_name      = "com.amazonaws.${var.region}.ecr.dkr"
+  vpc_endpoint_type = "Interface"
+
+  subnet_ids = [for subnet in aws_subnet.subnet : subnet.id]
+  security_group_ids = [aws_security_group.sg.id]
+  private_dns_enabled = true
+
+  tags = {
+    Name = "ecr-dkr-endpoint"
+  }
+}
