@@ -10,6 +10,10 @@ variable image {
     type = string
 }
 
+variable region {
+    type = string
+}
+
 variable internal {
     type = bool
 }
@@ -43,4 +47,24 @@ variable command {
 
 variable container_port {
     type = number
+}
+
+variable optional_policy_json {
+  type        = string
+  default     = "{}"
+}
+
+variable cpu {
+    type    = string
+    default = "256"
+}
+
+variable memory {
+    type    = string
+    default = "512"
+}
+
+variable health_check {
+    type = string
+    default = "/"
 }

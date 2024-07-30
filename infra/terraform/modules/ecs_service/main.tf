@@ -1,4 +1,26 @@
 
+locals {
+  optional_policy = jsondecode(var.optional_policy_json)
+}
+
+resource "aws_iam_policy" "optional_policy" {
+  name        = "OptionalPolicy-${var.name}"
+  description = "Optional policy for the ECS task execution role"
+  policy      = jsonencode(local.optional_policy)
+  count       = local.optional_policy == {} ? 0 : 1
+}
+
+resource "aws_iam_role_policy_attachment" "optional_policy_attachment" {
+  role       = aws_iam_role.ecs_task_execution_role.name
+  policy_arn = aws_iam_policy.optional_policy[count.index].arn
+  count      = local.optional_policy == {} ? 0 : 1
+}
+
+resource "aws_cloudwatch_log_group" "log_group" {
+  name              = "/ecs/${var.name}"
+  retention_in_days = 7
+}
+
 resource "aws_iam_role" "ecs_task_execution_role" {
     name = "ecsTaskExecutionRole-${var.name}"
 
@@ -17,6 +39,7 @@ resource "aws_iam_role" "ecs_task_execution_role" {
 
     managed_policy_arns = [
         "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy",
+        "arn:aws:iam::aws:policy/CloudWatchLogsFullAccess",
     ]
 
     tags = var.tags
@@ -45,8 +68,8 @@ resource "aws_ecs_task_definition" "task" {
     requires_compatibilities = ["FARGATE"]
     execution_role_arn       = aws_iam_role.ecs_task_execution_role.arn
     task_role_arn            = aws_iam_role.ecs_task_role.arn
-    cpu                      = "256"
-    memory                   = "512"
+    cpu                      = var.cpu
+    memory                   = var.memory
 
     container_definitions = jsonencode([{
         name      = "app"
@@ -65,6 +88,15 @@ resource "aws_ecs_task_definition" "task" {
                 hostPort      = var.container_port
             }
         ]
+
+        logConfiguration = {
+            logDriver = "awslogs"
+            options = {
+                "awslogs-group"         = aws_cloudwatch_log_group.log_group.name
+                "awslogs-region"        = var.region
+                "awslogs-stream-prefix" = "ecs"
+            }
+        }
     }])
 }
 

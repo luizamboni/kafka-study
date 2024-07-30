@@ -12,15 +12,15 @@ module "api_registry" {
 module "api" {
     source = "./modules/ecs_service"
 
-    name = "test"
-    image = var.image
+    name = "event_receiver"
+    image = var.event_receive_image
     cluster_id = aws_ecs_cluster.fargate_cluster.id
     subnet_ids = module.network.subnet_ids
     security_group_id = module.network.sg_id
     vpc_id = module.network.vpc_id
     internal = true
     container_port = 5000
-
+    region = local.region
     environment_variables = {
        	AWS_REGION = local.region
 		GLUE_SCHEMA_REGISTRY_NAME = local.registry_name

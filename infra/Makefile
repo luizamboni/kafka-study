@@ -1,13 +1,14 @@
 TERRAFORM_VERSION=1.8
 ECR_REGISTRY=${AWS_ACCOUNT}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com
 GIT_COMMIT_HASH=$(shell git rev-parse --short HEAD)
-TF_VAR_image=${ECR_REGISTRY}/seeds:${GIT_COMMIT_HASH}
-
+TF_VAR_event_receive_image=${ECR_REGISTRY}/seeds:${GIT_COMMIT_HASH}
+TF_VAR_metabase_image=${ECR_REGISTRY}/metabase:${GIT_COMMIT_HASH}
 
 TERRAFORM_BASE=docker run --rm -it --name terraform \
 	-v $(shell pwd)/infra/terraform/:/workspace \
 	-w /workspace \
-	-e TF_VAR_image=${TF_VAR_image} \
+	-e TF_VAR_event_receive_image=${TF_VAR_event_receive_image} \
+	-e TF_VAR_metabase_image=${TF_VAR_metabase_image} \
 	-e AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION} \
 	-e AWS_REGION=${AWS_REGION} \
 	-e AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} \
@@ -17,7 +18,9 @@ TERRAFORM_BASE=docker run --rm -it --name terraform \
 
 ecr-docker-build:
 	aws ecr get-login-password --region ${AWS_DEFAULT_REGION} | docker login --username AWS --password-stdin ${ECR_REGISTRY}
-	docker buildx build --platform linux/amd64,linux/arm64 -t ${TF_VAR_image} -f event-receiver/Dockerfile event-receiver --push
+	docker buildx build --platform linux/amd64,linux/arm64 -t ${TF_VAR_event_receive_image} -f event-receiver/Dockerfile event-receiver --push
+	docker buildx build --platform linux/amd64,linux/arm64 -t ${TF_VAR_metabase_image} -f metabase/Dockerfile event-receiver --push
+
 
 terraform-generate-certs:
 	cd infra/terraform/keys && ./generate.sh
@@ -85,6 +88,12 @@ terraform-create-msk-connect:
 	apply --auto-approve \
 	--target=module.s3_connect-avro-to-parquet-example
 
+terraform-create-ecr: terraform-init
+	${TERRAFORM_BASE} \
+	apply --auto-approve \
+	--target=module.metabase_registry \
+	--target=module.api_registry
+
 terraform-create-api: terraform-init ecr-docker-build
 	${TERRAFORM_BASE} \
 	apply --auto-approve \
@@ -95,6 +104,15 @@ terraform-destroy-api:
 	destroy --auto-approve \
 	--target=module.api_registry
 
+terraform-create-dataviz: terraform-init ecr-docker-build
+	${TERRAFORM_BASE} \
+	apply --auto-approve \
+	--target=module.metabase
+
+terraform-destroy-dataviz:
+	${TERRAFORM_BASE} \
+	destroy --auto-approve \
+	--target=module.metabase
 
 terraform-destroy-msk-connect: 
 	${TERRAFORM_BASE} \
