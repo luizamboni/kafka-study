@@ -97,6 +97,12 @@ terraform-create-ecr: terraform-init
 	--target=module.metabase_registry \
 	--target=module.api_registry
 
+terraform-destroy-ecr:
+	${TERRAFORM_BASE} \
+	destroy --auto-approve \
+	--target=module.metabase_registry \
+	--target=module.api_registry
+
 terraform-create-api: terraform-init ecr-docker-build
 	${TERRAFORM_BASE} \
 	apply --auto-approve \
