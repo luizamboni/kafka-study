@@ -33,6 +33,9 @@ terraform-plan: terraform-init
 	${TERRAFORM_BASE} \
 	plan
 
+
+terraform-create-dev: terraform-init terraform-create-network terraform-create-vpn-endpoint terraform-create-get-vpn-config terraform-create-ecr terraform-create-dataviz
+
 terraform-create-all: terraform-init terraform-create-network terraform-create-vpn-endpoint terraform-create-msk terraform-create-data-crawlers terraform-write-outputs
 	echo "All created"
 

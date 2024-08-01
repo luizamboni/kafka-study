@@ -112,3 +112,16 @@ resource "aws_vpc_endpoint" "ecr_dkr" {
     Name = "ecr-dkr-endpoint"
   }
 }
+
+resource "aws_vpc_endpoint" "cloudwatch" {
+  vpc_id            = aws_vpc.vpc.id
+  service_name      = "com.amazonaws.${var.region}.monitoring"
+  vpc_endpoint_type = "Interface"
+  subnet_ids = [for subnet in aws_subnet.subnet : subnet.id]
+  security_group_ids = [aws_security_group.sg.id]
+  private_dns_enabled = true
+
+  tags = {
+    Name = "cloudwatch-endpoint"
+  }
+}
