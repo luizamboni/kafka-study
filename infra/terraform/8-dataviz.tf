@@ -19,7 +19,7 @@ module "metabase" {
 
     memory = "2048"
 
-    health_check = "/api/health"
+    health_check = "/"
 
     environment_variables = {
 

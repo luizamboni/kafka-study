@@ -46,20 +46,26 @@ resource "aws_iam_role" "ecs_task_execution_role" {
 }
 
 resource "aws_iam_role" "ecs_task_role" {
-  name = "ecsTaskRole-${var.name}"
+    name = "ecsTaskRole-${var.name}"
 
-  assume_role_policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-        {
-            Action    = "sts:AssumeRole"
-            Effect    = "Allow"
-            Principal = {
-                Service = "ecs-tasks.amazonaws.com"
-            }
-        },
+    assume_role_policy = jsonencode({
+        Version = "2012-10-17"
+        Statement = [
+            {
+                Action    = "sts:AssumeRole"
+                Effect    = "Allow"
+                Principal = {
+                    Service = "ecs-tasks.amazonaws.com"
+                }
+            },
+        ]
+    })
+
+    managed_policy_arns = [
+        "arn:aws:iam::aws:policy/CloudWatchLogsFullAccess",
     ]
-  })
+
+    tags = var.tags
 }
 
 resource "aws_ecs_task_definition" "task" {
@@ -92,6 +98,7 @@ resource "aws_ecs_task_definition" "task" {
         logConfiguration = {
             logDriver = "awslogs"
             options = {
+                "awslogs-create-group"  = "true"
                 "awslogs-group"         = aws_cloudwatch_log_group.log_group.name
                 "awslogs-region"        = var.region
                 "awslogs-stream-prefix" = "ecs"
