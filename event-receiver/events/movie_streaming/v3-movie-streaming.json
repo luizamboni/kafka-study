@@ -1,0 +1,17 @@
+{
+  "type": "record",
+  "name": "StreamingDataV3",
+  "fields": [
+    {"name": "user_id", "type": "int"},
+    {"name": "movie_name", "type": "string"},
+    {"name": "streaming_hours", "type": "float"},
+    {"name": "genre", "type": "string"},
+    {"name": "gender", "type": "string"},
+    {"name": "age", "type": "int"},
+    {"name": "device", "type": "string"},
+    {"name": "start_date", "type": "string"},
+    {"name": "rating", "type": "float"},
+    {"name": "year", "type": "int"},
+    {"name": "director", "type": "string"}
+  ]
+}
