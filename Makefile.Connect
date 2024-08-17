@@ -10,15 +10,6 @@ connect-kafka-avro-to-pg:
 	-H 'Content-Type: application/json' \
 	-d @connect/sink/kafka-avro-to-pg-rows.json
 
-
-connect-delete-kafka-avro-to-s3-parquet-glue:
-	curl -X DELETE http://localhost:8083/connectors/kafka-avro-to-s3-parquet-glue
-
-connect-kafka-avro-to-s3-parquet-glue:
-	curl -X POST http://localhost:8083/connectors \
-	-H 'Content-Type: application/json' \
-	-d @connect/sink/kafka-avro-to-s3-parquet-glue.json
-
 connect-delete-kafka-avro-to-s3-parquet:
 	curl -X DELETE http://localhost:8083/connectors/kafka-avro-to-s3-parquet
 

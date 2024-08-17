@@ -1,8 +1,10 @@
 from requests import request
+import os
+host = os.getenv("HOST", "http://localhost:5000")
 
 for i in range(100_000):
     if i % 3 == 0:
-        request("POST","http://localhost:5000", json={
+        request("POST",f"{host}", json={
             "name": "user_login",
             "version": "v1",
             "payload": {
@@ -12,7 +14,7 @@ for i in range(100_000):
             }
         })
     elif i % 2 == 0:
-        request("POST","http://localhost:5000", json={
+        request("POST",f"{host}", json={
             "name": "user_login",
             "version": "v2",
             "payload": {
@@ -22,7 +24,7 @@ for i in range(100_000):
             }
         })
     else:
-        request("POST","http://localhost:5000", json={
+        request("POST",f"{host}", json={
             "name": "user_login",
             "version": "v3",
             "payload": {

@@ -19,6 +19,7 @@ include Makefile.Ksql
 include Makefile.SchemaRegistry
 include infra/Makefile
 include Makefile.EventReceiver
+include Makefile.Seeds
 
 
 test_load_vars:
